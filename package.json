@@ -1,0 +1,20 @@
+{
+  "name": "watch2getherbot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Tobias Greshake",
+  "license": "ISC",
+  "dependencies": {
+    "bufferutil": "^4.0.6",
+    "chromedriver": "^97.0.4",
+    "discord.js": "^13.6.0",
+    "encoding": "^0.1.13",
+    "geckodriver": "^3.0.1",
+    "selenium-webdriver": "^4.1.1",
+    "utf-8-validate": "^5.0.8"
+  }
+}
