@@ -1,13 +1,17 @@
 const { Client, Message } = require("discord.js");
 
-const {By,Key,Builder} = require("selenium-webdriver");
+const {By,Key,Builder,Options} = require("selenium-webdriver");
 //const {By,Key,Builder} = require("/usr/local/node_modules/selenium-webdriver");
 require("chromedriver");
 
 async function getW2GLink(){
  
+    let op = new Options();
+    op.addArgument("--disable-dev-shm-usage");
+    op.addArgument("--no-sandbox");
+    op.addArgument("--headless");
     //To wait for browser to build and launch properly
-    let driver = await new Builder().forBrowser("chrome").build();
+    let driver = await new Builder().forBrowser("chrome").setChromeOptions(op).build();
 
     await driver.get("https://w2g.tv/?lang=de");
 
