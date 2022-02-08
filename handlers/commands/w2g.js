@@ -6,12 +6,14 @@ require("chromedriver");
 
 async function getW2GLink(){
  
-    let op = new Options();
+    //To wait for browser to build and launch properly
+    //let driver = await new Builder().forBrowser("chrome").setChromeOptions(op).build();
+    let driver = await new Builder().forBrowser("chrome").build();
+
+    let op = new Options(driver);
     op.addArgument("--disable-dev-shm-usage");
     op.addArgument("--no-sandbox");
     op.addArgument("--headless");
-    //To wait for browser to build and launch properly
-    let driver = await new Builder().forBrowser("chrome").setChromeOptions(op).build();
 
     await driver.get("https://w2g.tv/?lang=de");
 

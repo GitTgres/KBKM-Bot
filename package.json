@@ -11,6 +11,7 @@
   "dependencies": {
     "bufferutil": "^4.0.6",
     "chromedriver": "^97.0.4",
+    "chromium": "^3.0.3",
     "discord.js": "^13.6.0",
     "encoding": "^0.1.13",
     "geckodriver": "^3.0.1",
