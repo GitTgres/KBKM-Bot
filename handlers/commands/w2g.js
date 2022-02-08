@@ -6,15 +6,8 @@ require("chromedriver");
 
 async function getW2GLink(){
  
-    const options = new chromeDriver.Options();
-
-    options.addArguments(
-    'headless',
-    'disable-gpu',
-    );
-
     //To wait for browser to build and launch properly
-    let driver = await new Builder().forBrowser("chrome").setChromeOptions(options).build();
+    let driver = await new Builder().forBrowser("chrome").build();
 
     await driver.get("https://w2g.tv/?lang=de");
 
