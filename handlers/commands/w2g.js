@@ -12,7 +12,7 @@ async function getW2GLink(){
 
     var currentTime1 = new Date().getTime();
 
-    while (currentTime1 + 2000 >= new Date().getTime()) {}
+    while (currentTime1 + 500 >= new Date().getTime()) {}
 
     await driver.findElement(By.xpath("//*[@id='qc-cmp2-ui']/div[2]/div/button[2]")).click();
 
@@ -22,7 +22,7 @@ async function getW2GLink(){
 
     var currentTime = new Date().getTime();
 
-    while (currentTime + 2000 >= new Date().getTime()) {}
+    while (currentTime + 500 >= new Date().getTime()) {}
 
     var link = await driver.findElement(By.xpath("//*[@id='w2g-top-inviteurl']/input")).getAttribute("value");
     
