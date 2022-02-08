@@ -4,9 +4,10 @@ const {By,Key,Builder} = require("selenium-webdriver");
 const { Options } = require('selenium-webdriver/chrome');
 require("chromedriver");
 
-async function getW2GLink(){
+async function getW2GLink()
+{
  
-    let driver = await new Builder().forBrowser("chrome").setChromeOptions(new Options().addArguments("--disable-dev-shm-usage").addArguments("--no-sandbox").addArguments("--headless")).build();
+    let driver = await new Builder().forBrowser("chrome").setChromeOptions(new Options().addArguments("--disable-dev-shm-usage").addArguments("--no-sandbox").addArguments("--headless").addArguments("--disable-gpu")).build();
 
     await driver.get("https://w2g.tv/?lang=de");
 
@@ -50,10 +51,13 @@ module.exports = {
 
     async execute(bot, message, parts, prefix) {
 
+        message.reply({content: '#'});
+
         var link = await getW2GLink();
 
-        message.reply({
-            content: `${link}`
-        })
+        return link;
+        //message.reply({
+        //    content: `${link}`
+        //});
     }
 }
