@@ -6,21 +6,17 @@ require("chromedriver");
 
 async function getW2GLink(){
  
-    var searchString = "Automation testing with Selenium and JavaScript";
+    const options = new chromeDriver.Options();
+
+    options.addArguments(
+    'headless',
+    'disable-gpu',
+    );
 
     //To wait for browser to build and launch properly
-    let driver = await new Builder().forBrowser("chrome").build();
+    let driver = await new Builder().forBrowser("chrome").setChromeOptions(options).build();
 
-    //To fetch http://google.com from the browser with our code.
     await driver.get("https://w2g.tv/?lang=de");
-         
-    //To send a search query by passing the value in searchString.
-    //await driver.findElement(By.name("q")).sendKeys(searchString,Key.RETURN);
-
-    //Verify the page title and print it
-    var title = await driver.getTitle();
-
-    //await driver.manage().deleteAllCookies();
 
     await driver.manage().window().maximize();
 
