@@ -10,6 +10,10 @@ async function getW2GLink(){
 
     await driver.get("https://w2g.tv/?lang=de");
 
+    var currentTime1 = new Date().getTime();
+
+    while (currentTime1 + 2000 >= new Date().getTime()) {}
+
     await driver.findElement(By.xpath("//*[@id='qc-cmp2-ui']/div[2]/div/button[2]")).click();
 
     await driver.findElement(By.id("create_room_button")).click();
@@ -22,6 +26,8 @@ async function getW2GLink(){
 
     var link = await driver.findElement(By.xpath("//*[@id='w2g-top-inviteurl']/input")).getAttribute("value");
     
+    //var link = await driver.getTitle();
+
     console.log(`Der Link ist: ${link}`);
 
     await driver.quit();
