@@ -1,7 +1,6 @@
 {
   "name": "watch2getherbot",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -17,5 +16,14 @@
     "geckodriver": "^3.0.1",
     "selenium-webdriver": "^4.1.1",
     "utf-8-validate": "^5.0.8"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GitTgres/Watch2GetherBot.git"
+  },
+  "bugs": {
+    "url": "https://github.com/GitTgres/Watch2GetherBot/issues"
+  },
+  "homepage": "https://github.com/GitTgres/Watch2GetherBot#readme",
+  "description": ""
 }

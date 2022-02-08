@@ -1,6 +1,7 @@
 const { Client, Message } = require("discord.js");
 
-const {By,Key,Builder,Options} = require("selenium-webdriver");
+const {By,Key,Builder} = require("selenium-webdriver");
+const { Options } = require('selenium-webdriver/chrome');
 //const {By,Key,Builder} = require("/usr/local/node_modules/selenium-webdriver");
 require("chromedriver");
 
@@ -8,16 +9,15 @@ async function getW2GLink(){
  
     //To wait for browser to build and launch properly
     //let driver = await new Builder().forBrowser("chrome").setChromeOptions(op).build();
-    let driver = await new Builder().forBrowser("chrome").build();
-
-    let op = new Options(driver);
-    op.addArgument("--disable-dev-shm-usage");
-    op.addArgument("--no-sandbox");
-    op.addArgument("--headless");
+    let driver = await new Builder()
+    .forBrowser("chrome")
+    .setChromeOptions(new Options()
+    .addArguments("--disable-dev-shm-usage")
+    .addArguments("--no-sandbox")
+    .addArguments("--headless"))
+    .build();
 
     await driver.get("https://w2g.tv/?lang=de");
-
-    await driver.manage().window().maximize();
 
     await driver.findElement(By.xpath("//*[@id='qc-cmp2-ui']/div[2]/div/button[2]")).click();
 
