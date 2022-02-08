@@ -1,7 +1,7 @@
 const { Client, Message } = require("discord.js");
 
-//const {By,Key,Builder} = require("selenium-webdriver");
-const {By,Key,Builder} = require("/usr/local/node_modules/selenium-webdriver");
+const {By,Key,Builder} = require("selenium-webdriver");
+//const {By,Key,Builder} = require("/usr/local/node_modules/selenium-webdriver");
 require("chromedriver");
 
 async function getW2GLink(){
