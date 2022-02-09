@@ -10,8 +10,6 @@ const bot = new Client({
     ]
 })
 
-var linkGlobal = "";
-
 const { readdirSync } = require('fs');
 const config = require('./config.json');
 
@@ -36,29 +34,6 @@ bot.on('ready', async message =>{
     })
 })
 
-bot.on("messageUpdate", (oldMessage, newMessage) => {
-    
-    //console.log(`${oldMessage.toString()}`);
-    //console.log(`${newMessage.toString()}`);
-    if (newMessage.toString() === "") return;
-    if (linkGlobal !== "") 
-    {
-        newMessage.edit(`${linkGlobal}`);
-        linkGlobal = "";
-        return;
-    }
-
-    if(oldMessage.author.bot && newMessage.author.bot)
-    {
-        if (newMessage.toString().length >= 15)
-        {
-            return;
-        }
-        if (newMessage.toString() === "") return;
-        newMessage.edit(`${newMessage.toString()}` + `#`);
-    }
-});
-
 bot.on('messageCreate', async message => {
     let parts = message.content.split(/ +/);
     if(message.channel.type == 'DM') return;
@@ -67,28 +42,10 @@ bot.on('messageCreate', async message => {
     let cmd = message.content.slice(config.prefix.length).trim().split(/ +/).shift().toLowerCase();
     let comm = bot.commands.get(cmd) || bot.commands.find(a => a.aliases && a.aliases.includes(cmd));
 
-    if(message.author.bot)
-    {
-        if (message.toString() === "#") 
-        {
-            message.edit("##");
-        }
-    }
-
     if (comm) 
     {
         if (!message.content.startsWith(config.prefix)) return;  
-
-        if (cmd === "w2g") 
-        {
-            var link = await comm.execute(bot, message, parts, config.prefix);
-            linkGlobal = link.toString();
-            console.log(`Ich bin der globale Link ${linkGlobal}`);   
-        }
-        else
-        {
-            comm.execute(bot, message, parts, config.prefix);
-        }
+        comm.execute(bot, message, parts, config.prefix);
 
     }
     else 

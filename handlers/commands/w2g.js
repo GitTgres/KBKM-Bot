@@ -4,6 +4,22 @@ const {By,Key,Builder} = require("selenium-webdriver");
 const { Options } = require('selenium-webdriver/chrome');
 require("chromedriver");
 
+async function someLongFunc (msg) 
+{
+    var content = msg.content;
+    return new Promise((resolve, reject)=> {
+        var interval = setInterval(async function() { 
+        console.log("Funktion 1");
+        await msg.edit(`${content}` + '#');
+        content += '#';
+        }, 1000);
+        setTimeout(function() { 
+        clearInterval(interval); 
+        resolve();
+        }, 5000);
+    })
+}
+
 async function getW2GLink()
 {
  
@@ -33,7 +49,9 @@ async function getW2GLink()
 
     await driver.quit();
 
-    return link;
+    return new Promise((resolve, reject)=> {
+        resolve(link);
+    });
 }
 
 module.exports = {
@@ -50,14 +68,33 @@ module.exports = {
      */
 
     async execute(bot, message, parts, prefix) {
+        //var link = await getW2GLink();
 
-        message.reply({content: '#'});
+        var msg = await message.reply({content: `#`});
 
-        var link = await getW2GLink();
+        let someLongFuncPromise, anotherLongFuncPromise
+        const start = Date.now()
+        try 
+        {
+            someLongFuncPromise = someLongFunc(msg)
+        }
+        catch (ex) 
+        {
+            console.error('something went wrong during func 1')
+        }
+        try 
+        {
+            anotherLongFuncPromise = getW2GLink()
+        }
+        catch (ex) 
+        {
+            console.error('something went wrong during func 2')
+        }
 
-        return link;
-        //message.reply({
-        //    content: `${link}`
-        //});
+        await someLongFuncPromise
+        var res = await anotherLongFuncPromise
+        message.reply({content: `${res}`});
+        const totalTime = Date.now() - start
+        console.log('Execution completed in ', totalTime)
     }
 }
