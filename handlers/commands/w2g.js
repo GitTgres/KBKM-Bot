@@ -1,57 +1,105 @@
-const { Client, Message } = require("discord.js");
+const { Client, Message, MessageEmbed } = require("discord.js");
 
 const {By,Key,Builder} = require("selenium-webdriver");
 const { Options } = require('selenium-webdriver/chrome');
 require("chromedriver");
 
-async function someLongFunc (msg) 
+var linkAbgeholt = false;
+
+//Für die Performance gut
+const sleep = (delay) => new Promise ((resolve) => setTimeout(resolve, delay));
+
+async function printProgressBar(msg) 
 {
-    var content = msg.content;
-    return new Promise((resolve, reject)=> {
-        var interval = setInterval(async function() { 
-        console.log("Funktion 1");
-        await msg.edit(`${content}` + '#');
-        content += '#';
-        }, 1000);
-        setTimeout(function() { 
-        clearInterval(interval); 
-        resolve();
-        }, 5000);
-    })
+    var currentTime1 = new Date().getTime();
+
+    while (currentTime1 + 10000 >= new Date().getTime()) 
+    {
+        if (linkAbgeholt) 
+        {
+            return new Promise((resolve, reject)=> 
+            {
+                resolve(msg);
+            });
+        }
+
+        //await msg.edit(`${msg.content}` + '🤝');
+        await msg.edit({embeds: [createEmbedMsg("", true, msg.embeds.at(0))]});
+        await sleep(1000);
+    }
+
+    await msg.edit('Bei der Abholung des Links ist etwas schiefgelaufen ☹');
+
+    await sleep(10000);
+
+    msg.delete();
 }
 
 async function getW2GLink()
 {
  
-    let driver = await new Builder().forBrowser("chrome").setChromeOptions(new Options().addArguments("--disable-dev-shm-usage").addArguments("--no-sandbox").addArguments("--headless").addArguments("--disable-gpu")).build();
+    const start = Date.now();
 
-    await driver.get("https://w2g.tv/?lang=de");
+    try 
+    {
+        let driver = await new Builder().forBrowser("chrome").setChromeOptions(new Options().addArguments("--disable-dev-shm-usage").addArguments("--no-sandbox").addArguments("--headless").addArguments("--disable-gpu")).build();
 
-    var currentTime1 = new Date().getTime();
+        await driver.get("https://w2g.tv/?lang=de");
+        //await driver.get("https://google.com");
 
-    while (currentTime1 + 500 >= new Date().getTime()) {}
+        await sleep(500);
 
-    await driver.findElement(By.xpath("//*[@id='qc-cmp2-ui']/div[2]/div/button[2]")).click();
+        await driver.findElement(By.xpath("//*[@id='qc-cmp2-ui']/div[2]/div/button[2]")).click();
 
-    await driver.findElement(By.id("create_room_button")).click();
+        await driver.findElement(By.id("create_room_button")).click();
 
-    await driver.findElement(By.className("ui fluid green cancel button")).click()
+        await driver.findElement(By.className("ui fluid green cancel button")).click()
 
-    var currentTime = new Date().getTime();
+        await sleep(500);
 
-    while (currentTime + 500 >= new Date().getTime()) {}
+        var link = await driver.findElement(By.xpath("//*[@id='w2g-top-inviteurl']/input")).getAttribute("value");
 
-    var link = await driver.findElement(By.xpath("//*[@id='w2g-top-inviteurl']/input")).getAttribute("value");
-    
-    //var link = await driver.getTitle();
+        console.log(`Der Link ist: ${link}`);
 
-    console.log(`Der Link ist: ${link}`);
+        await driver.quit();
 
-    await driver.quit();
+    } catch (error) 
+    {
+        return new Promise((resolve, reject)=> 
+        {
+            reject("Bei der Abholung des Links ist etwas schiefgelaufen");
+        });
+    }
 
-    return new Promise((resolve, reject)=> {
+    const totalTime = Date.now() - start;
+    console.log('Die Zeit zum Link holen beträgt: ', totalTime);
+
+    linkAbgeholt = true;
+
+    return new Promise((resolve, reject)=> 
+    {
         resolve(link);
     });
+}
+
+function createEmbedMsg(link, progressBarOn, progressBar) 
+{
+    if (progressBarOn) 
+    {
+        //progressBar.fields.at(0).value += `🤝` ;
+        //progressBar.setTitle(`${progressBar.title}` + '🤝');
+        progressBar.setDescription(`${progressBar.description}` + '🤝');
+        return progressBar;
+    }
+    const msgEmbed = new MessageEmbed()
+    .setColor('#0099ff')
+    .setTimestamp()
+    .setTitle('Hier ein neuer Watch2Gether Link')
+    .setURL(`${link}`)
+    .setDescription(`${link}`)
+    .setThumbnail('https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse3.mm.bing.net%2Fth%3Fid%3DOIP._gelCIt-j64pWPX1sJ7r-AHaHa%26pid%3DApi&f=1')
+    //.addField(`${link}`, `Toller Link 😏`, true)
+    return msgEmbed;
 }
 
 module.exports = {
@@ -68,33 +116,30 @@ module.exports = {
      */
 
     async execute(bot, message, parts, prefix) {
-        //var link = await getW2GLink();
 
-        var msg = await message.reply({content: `#`});
+        linkAbgeholt = false;
 
-        let someLongFuncPromise, anotherLongFuncPromise
-        const start = Date.now()
-        try 
-        {
-            someLongFuncPromise = someLongFunc(msg)
-        }
-        catch (ex) 
-        {
-            console.error('something went wrong during func 1')
-        }
-        try 
-        {
-            anotherLongFuncPromise = getW2GLink()
-        }
-        catch (ex) 
-        {
-            console.error('something went wrong during func 2')
-        }
+        //var msg = await message.reply({content: `🤝`});
 
-        await someLongFuncPromise
-        var res = await anotherLongFuncPromise
-        message.reply({content: `${res}`});
-        const totalTime = Date.now() - start
-        console.log('Execution completed in ', totalTime)
+        const msgEmbed = new MessageEmbed()
+        .setColor('#0099ff')
+        .setDescription('🤝')
+        .setTitle('Hole einen neuen Watch2Gether Link')
+        //.addField(`Test`, `Toller Link 😏`, true)
+        
+        var msg = await message.reply({embeds: [msgEmbed]});
+
+        const start = Date.now();
+        Promise.all([printProgressBar(msg), getW2GLink()])
+        .then((res) => {
+            //res[0].edit(`${res[1]}`);
+            res[0].edit({embeds: [createEmbedMsg(res[1], false)]});
+            //res[0].edit({content: `${res[1]}`});
+            const totalTime = Date.now() - start;
+            console.log('Link ausgeliefert in ', totalTime);
+        }).catch((error) => {
+            console.error(error);
+        });
+
     }
 }
