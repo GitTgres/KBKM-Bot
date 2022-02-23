@@ -1,8 +1,6 @@
 const { Client, Message, MessageEmbed } = require("discord.js");
 
-const {By,Key,Builder} = require("selenium-webdriver");
-const { Options } = require('selenium-webdriver/chrome');
-require("chromedriver");
+const puppeteer = require('puppeteer');
 
 var linkAbgeholt = false;
 
@@ -35,6 +33,13 @@ async function printProgressBar(msg)
     msg.delete();
 }
 
+async function clickXpath(page, xpath)
+{
+    await page.waitForXPath(xpath);
+    const elements = await page.$x(xpath);
+    await elements[0].click();
+}
+
 async function getW2GLink()
 {
  
@@ -42,29 +47,58 @@ async function getW2GLink()
 
     try 
     {
-        let driver = await new Builder().forBrowser("chrome").setChromeOptions(new Options().addArguments("--disable-dev-shm-usage").addArguments("--no-sandbox").addArguments("--headless").addArguments("--disable-gpu")).build();
+        //let driver = await new Builder().forBrowser("chrome").setChromeOptions(new Options().addArguments("--disable-dev-shm-usage").addArguments("--no-sandbox").addArguments("--headless").addArguments("--disable-gpu")).build();
+        const browser = await puppeteer.launch({"headless": false, slowMo: 100, args: ['--disable-dev-shm-usage', '--no-sandbox', '--disable-gpu']});
+        
+        const page = await browser.newPage();
 
-        await driver.get("https://w2g.tv/?lang=de");
+        await page.goto("https://w2g.tv/?lang=de");
+
+        await clickXpath(page, '//*[@id="qc-cmp2-ui"]/div[2]/div/button[2]');
+
+        await clickXpath(page, '//*[@id="create_room_button"]');
+        //await clickXpath(page, '//*[@id="create_rsdfsdoom_button"]');
+
+        await clickXpath(page, '//*[@id="intro-modal"]/div[2]/div');
+
+        //click somewhere on the page to disable the modal
+        //await page.mouse.click(400, 300)
+
+        //await page.waitForXPath('//*[@id="w2g-top-inviteurl"]/input');
+            
+        await page.waitForSelector('#w2g-top-inviteurl > input[type=text]');
+
+        await clickXpath(page, )
+
+        var link = await page.$eval('#w2g-top-inviteurl > input[type=text]', (input) => input.value)
+        //let test = await page.$eval("#w2g-top-dfgdfginviteurl > input[type=text]", (el) => el.getAttribute("data-w2g")[0]);
+        //var link = "https://lul.de"
+        console.log(`Der Link ist: ${link} Lalalala`);
+
+        //await browser.close();
+
+        //await driver.get("https://w2g.tv/?lang=de");
         //await driver.get("https://google.com");
 
-        await sleep(500);
+        //await sleep(500);
 
-        await driver.findElement(By.xpath("//*[@id='qc-cmp2-ui']/div[2]/div/button[2]")).click();
+        //await driver.findElement(By.xpath("//*[@id='qc-cmp2-ui']/div[2]/div/button[2]")).click();
 
-        await driver.findElement(By.id("create_room_button")).click();
+        //await driver.findElement(By.id("create_room_button")).click();
 
-        await driver.findElement(By.className("ui fluid green cancel button")).click()
+        //await driver.findElement(By.className("ui fluid green cancel button")).click()
 
-        await sleep(500);
+        //await sleep(500);
 
-        var link = await driver.findElement(By.xpath("//*[@id='w2g-top-inviteurl']/input")).getAttribute("value");
+        //var link = await driver.findElement(By.xpath("//*[@id='w2g-top-inviteurl']/input")).getAttribute("value");
 
-        console.log(`Der Link ist: ${link}`);
+        //console.log(`Der Link ist: ${link}`);
 
-        await driver.quit();
+        //await driver.quit();
 
     } catch (error) 
     {
+        console.error(error);
         return new Promise((resolve, reject)=> 
         {
             reject("Bei der Abholung des Links ist etwas schiefgelaufen");
