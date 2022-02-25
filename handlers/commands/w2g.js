@@ -67,6 +67,8 @@ async function getW2GLink()
 
         await page.goto("https://w2g.tv/?lang=de");
 
+        await page.waitForSelector('#qc-cmp2-ui > div.qc-cmp2-footer.qc-cmp2-footer-overlay.qc-cmp2-footer-scrolled > div > button.css-k8o10q');
+
         await page.click('#qc-cmp2-ui > div.qc-cmp2-footer.qc-cmp2-footer-overlay.qc-cmp2-footer-scrolled > div > button.css-k8o10q');
         
         await page.click('#create_room_button');
