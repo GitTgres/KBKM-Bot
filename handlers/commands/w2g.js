@@ -2,9 +2,6 @@ const { Client, Message, MessageEmbed } = require("discord.js");
 
 const puppeteer = require('puppeteer');
 
-var linkAbgeholt = false;
-
-//var progressBar = ['😁', '😃', '🤨', '😠', '😡'];
 var progressBar = ['|😁', '😃', '🤨', '😠', '😡'];
 
 var counter = 0;
@@ -27,33 +24,6 @@ async function printEmoji(msg, lastElement)
     
 }
 
-async function printProgressBar(msg) 
-{
-    var currentTime1 = new Date().getTime();
-
-    while (currentTime1 + 10000 >= new Date().getTime()) 
-    {
-        if (linkAbgeholt) 
-        {
-            await printEmoji(msg, true);
-            return new Promise((resolve)=> 
-            {
-                resolve(msg);
-            });
-        }
-
-        await printEmoji(msg, false);
-
-        await sleep(1000);
-    }
-
-    await msg.edit('Bei der Abholung des Links ist etwas schiefgelaufen ☹️');
-
-    await sleep(10000);
-
-    msg.delete();
-}
-
 async function getW2GLink()
 {
  
@@ -66,6 +36,7 @@ async function getW2GLink()
         const page = await browser.newPage();
 
         await page.goto("https://w2g.tv/?lang=de");
+        //await page.goto("https://google.de");
 
         await page.waitForSelector('#qc-cmp2-ui > div.qc-cmp2-footer.qc-cmp2-footer-overlay.qc-cmp2-footer-scrolled > div > button.css-k8o10q');
 
@@ -80,7 +51,6 @@ async function getW2GLink()
 
         await page.waitForFunction("document.querySelector('#w2g-top-inviteurl > input[type=text]').value != ''");
 
-        //await sleep(500);
         var link = await page.$eval('#w2g-top-inviteurl > input[type=text]', (el) => el.value);
         console.log(`Der Link ist: ${link}`);
 
@@ -121,22 +91,54 @@ module.exports = {
 
     async execute(bot, message, parts, prefix) {
 
-        linkAbgeholt = false;
+        const start = Date.now();
 
         var msg = await message.reply({content: `${progressBar[counter]}`});
 
         counter++;
 
-        const start = Date.now();
-        Promise.all([printProgressBar(msg), getW2GLink()])
-        .then((res) => {
-            res[0].edit({content: `${res[1]}`});
+        //print Progress Bar
+        const interval = setInterval(async () => {
+            await printEmoji(msg, false);
+        }, 1000);
+    
+        getW2GLink()
+        .then(async (link) => {
+            clearInterval(interval);
             counter = 0;
+            
+            //delete Progress Bar
+            await msg.delete();
+
             const totalTime = Date.now() - start;
-            console.log('Link ausgeliefert in ', totalTime);
-        }).catch((error) => {
+            console.log('Link ausgeliefert in: ', totalTime);
+
+            //create new message with the w2g link
+            const msgEmbed = new MessageEmbed()
+            .setColor('#0099ff')
+            .setTimestamp()
+            .setTitle('Hier ein neuer Watch2Gether Link')
+            .setURL(`${link}`)
+            .setDescription(`${link}`)
+            .setThumbnail('https://media1.tenor.com/images/d5a2e3786faa13b1fdb8b27c28d496ee/tenor.gif?itemid=14327746')
+            //.setThumbnail('https://www.omega-level.net/wp-content/uploads/2015/02/gasp.gif')
+            .addField(`Der Link wurde ausgeliefert in: `, `${totalTime}ms`, true)
+            await message.reply({embeds: [msgEmbed]});
+
+        })
+        .catch(async (error) => {
+            clearInterval(interval);
+    
+            await printEmoji(msg, true);
+            await msg.edit('Bei der Abholung des Links ist etwas schiefgelaufen ☹️');
+    
+            console.log(error);
+    
             counter = 0;
-            console.error(error);
+    
+            await sleep(10000);
+    
+            msg.delete();
         });
 
     }
