@@ -1,25 +1,36 @@
 {
   "name": "watch2getherbot",
   "version": "1.0.0",
+  "description": "Discord Bot, which creates a Watch2Gether link",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "Tobias Greshake",
-  "license": "ISC",
-  "dependencies": {
-    "discord.js": "^13.6.0",
-    "encoding": "^0.1.13",
-    "puppeteer": "^13.4.0",
-    "utf-8-validate": "^5.0.8"
+    "start": "ts-node src/index.ts",
+    "start:dev": "ts-node-dev src/index.ts",
+    "start:prod": "node dist/index.js",
+    "build": "tsc",
+    "watch": "tsc -w"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/GitTgres/Watch2GetherBot.git"
   },
+  "author": "Tobias Greshake",
+  "license": "ISC",
   "bugs": {
     "url": "https://github.com/GitTgres/Watch2GetherBot/issues"
   },
   "homepage": "https://github.com/GitTgres/Watch2GetherBot#readme",
-  "description": ""
+  "dependencies": {
+    "discord.js": "^13.6.0",
+    "dotenv": "^16.0.0",
+    "glob": "^7.2.0",
+    "puppeteer": "^13.5.1"
+  },
+  "devDependencies": {
+    "@types/glob": "^7.2.0",
+    "@types/node": "^17.0.23",
+    "ts-node": "^10.7.0",
+    "ts-node-dev": "^1.1.8",
+    "typescript": "^4.6.2"
+  }
 }
