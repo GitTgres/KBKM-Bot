@@ -33,7 +33,7 @@ export class ExtendedClient extends Client {
         //if you want that your bot uses the slash commands in a global scope, you have to replace 
         //this.guilds.cache.get(guildId)? with this.application?
 
-        commands.forEach((command) =>{
+        commands.forEach(async (command) =>{
             switch (command.name) 
             {
                 case "w2g":
@@ -41,15 +41,59 @@ export class ExtendedClient extends Client {
                         {
                         name: command.name,
                         description: "Erstellt einen Watch2Gether Link",
+                        default_permission: false,
                         options: [
                             {
                                 name: "playlist",
                                 description: "Playlist mit welcher gestartet werden soll (mario, spider-man, 80s)",
                                 required: false,
-                                type: Constants.ApplicationCommandOptionTypes.STRING
+                                type: Constants.ApplicationCommandOptionTypes.STRING,
+                                choices: [
+                                    {
+                                        name: "mario",
+                                        value: "mario"
+                                    },
+                                    {
+                                        name: "spider-man",
+                                        value: "spider-man"
+                                    },
+                                    {
+                                        name: "80s",
+                                        value: "80s"
+                                    },
+                                ]
+                            },
+                            {
+                                name: 'hidden',
+                                description: 'Der Watch2Gether Link wird nur dir angezeigt',
+                                required: false,
+                                type: Constants.ApplicationCommandOptionTypes.STRING,
+                                choices: [
+                                    {
+                                        name: "wahr",
+                                        value: "wahr"
+                                    },
+                                ]
                             }
                         ]
                     })
+                    //const cmd = await this.guilds.cache.get(guildId)?.commands.fetch()
+                    //console.log(cmd)
+                    
+                    this.guilds.cache.get(guildId)?.commands.permissions.add({ command: '956354385192054837', permissions: [
+                        {
+                            id: '956575646270767164',
+                            type: 'ROLE',
+                            permission: true
+                        }
+                    ]});
+                    this.guilds.cache.get(guildId)?.commands.permissions.add({ command: '956354385192054837', permissions: [
+                        {
+                            id: '386465125801918465',
+                            type: 'USER',
+                            permission: true
+                        }
+                    ]});
                     break;
                 case "ping":
                     this.guilds.cache.get(guildId)?.commands.create(

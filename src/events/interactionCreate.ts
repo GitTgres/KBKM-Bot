@@ -6,8 +6,22 @@ import { ExtendedInteraction } from "../typings/Command";
 export default new Event("interactionCreate", async (interaction) => {
     // Chat Input Commands
     if (interaction.isCommand()) {
-        await interaction.deferReply();
         const command = client.commands.get(interaction.commandName);
+        if (command.name === "w2g") 
+        {
+            if (interaction.options.getString('hidden') !== null) 
+            {
+                await interaction.deferReply({ ephemeral: true });
+            }
+            else
+            {
+                await interaction.deferReply();
+            }
+        }
+        else
+        {
+            await interaction.deferReply();
+        }
         if (!command)
             return interaction.followUp("You have used a non existent command");
 
