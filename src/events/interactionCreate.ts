@@ -4,10 +4,10 @@ import { Event } from "../structures/Event";
 import { ExtendedInteraction } from "../typings/Command";
 
 export default new Event("interactionCreate", async (interaction) => {
-    // Chat Input Commands
+    // Chat Input Commands    
     if (interaction.isCommand()) {
         const command = client.commands.get(interaction.commandName);
-        if (command.name === "w2g") 
+        if (command.name === "w2g" || command.name === "mc-server") 
         {
             if (interaction.options.getString('hidden') !== null) 
             {

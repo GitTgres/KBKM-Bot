@@ -33,19 +33,19 @@ export class ExtendedClient extends Client {
         //if you want that your bot uses the slash commands in a global scope, you have to replace 
         //this.guilds.cache.get(guildId)? with this.application?
 
-        commands.forEach(async (command) =>{
+        commands.forEach(async (command: CommandType) =>{
             switch (command.name) 
             {
                 case "w2g":
                     this.guilds.cache.get(guildId)?.commands.create(
                         {
                         name: command.name,
-                        description: "Erstellt einen Watch2Gether Link",
+                        description: command.description,
                         default_permission: false,
                         options: [
                             {
                                 name: "playlist",
-                                description: "Playlist mit welcher gestartet werden soll (mario, spider-man, 80s)",
+                                description: "Playlist mit welcher gestartet werden soll (Mario, Spider-man, 80s)",
                                 required: false,
                                 type: Constants.ApplicationCommandOptionTypes.STRING,
                                 choices: [
@@ -70,8 +70,8 @@ export class ExtendedClient extends Client {
                                 type: Constants.ApplicationCommandOptionTypes.STRING,
                                 choices: [
                                     {
-                                        name: "wahr",
-                                        value: "wahr"
+                                        name: "true",
+                                        value: "true"
                                     },
                                 ]
                             }
@@ -99,10 +99,54 @@ export class ExtendedClient extends Client {
                     this.guilds.cache.get(guildId)?.commands.create(
                         {
                         name: command.name,
-                        description: "Antwortet mit pong"
+                        description: command.description
                     })
                     break;
-            
+                case "mc-server":
+                    this.guilds.cache.get(guildId)?.commands.create({
+                        name: command.name,
+                        description: command.description,
+                        options: [
+                            {
+                                name: 'info',
+                                description: 'Gibt Infos über den Minecraft Server aus',
+                                type: Constants.ApplicationCommandOptionTypes.SUB_COMMAND,
+                                options: [
+                                    {
+                                        name: 'hidden',
+                                        description: 'Die Infos über den Minecraft Server werden nur dir angezeigt',
+                                        required: false,
+                                        type: Constants.ApplicationCommandOptionTypes.STRING,
+                                        choices: [
+                                            {
+                                                name: "true",
+                                                value: "true"
+                                            },
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                name: 'start',
+                                description: 'Startet den Minecraft Server',
+                                type: Constants.ApplicationCommandOptionTypes.SUB_COMMAND,
+                                options: [
+                                    {
+                                        name: 'hidden',
+                                        description: 'Nur dir wird angezeigt, dass der Minecraft Server gestartet wird',
+                                        required: false,
+                                        type: Constants.ApplicationCommandOptionTypes.STRING,
+                                        choices: [
+                                            {
+                                                name: "true",
+                                                value: "true"
+                                            },
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    });
             }
         });
         console.log(`Registering commands to ${guildId}`);

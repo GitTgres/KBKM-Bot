@@ -75,6 +75,7 @@ export default new Command({
         .setThumbnail('https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fimages.discordapp.net%2Favatars%2F745313401739149364%2Fc9558a888a4a293312bd979fce360425.png%3Fsize%3D512&f=1&nofb=1')
         //.setThumbnail('https://media1.tenor.com/images/d5a2e3786faa13b1fdb8b27c28d496ee/tenor.gif?itemid=14327746')
         //.setThumbnail('https://www.omega-level.net/wp-content/uploads/2015/02/gasp.gif')
+        //.setThumbnail('https://c.tenor.com/arkHcMTi6rgAAAAC/the-office-interested.gif')
         //.addField(`Der Link wurde ausgeliefert in: `, `${totalTime}ms`)
 
         interaction.followUp({embeds: [msgEmbed]});
