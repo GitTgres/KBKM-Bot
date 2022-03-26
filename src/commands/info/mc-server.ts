@@ -14,31 +14,38 @@ export default new Command({
             case "info":
                 try 
                 {
-                    const serverInfo = (await exec(`hcloud server list MinecraftServer -o columns=ipv4,status -o noheader`)).stdout.split("   ");
-                    console.log(serverInfo)
+                    const serverInfo = (await exec(`hcloud server list MinecraftServer -o columns=ipv4,status,location -o noheader`)).stdout.split("   ");
+                    console.log(serverInfo);
+
+                    let standort = serverInfo.at(2).replace('\n','');
+                    if (standort.includes('nbg')) 
+                    {
+                        standort = 'Nürnberg'
+                    }
+
                     
                     const msgEmbed = new MessageEmbed()
                     .setTitle('Hier die Infos über den Minecraft Server')
                     .addFields([
                         {
                             name: "Serveradresse",
-                            value: serverInfo.at(0),
-                            inline: true
-                        },
-                        {
-                            name: "Port",
-                            value: "25565",
+                            value: `${serverInfo.at(0)}:25565`,
                             inline: true
                         },
                         {
                             name: "Status",
                             value: serverInfo.at(1),
                             inline: true
-                        }
+                        },
+                        {
+                            name: "Standort",
+                            value: `🇩🇪 ${standort}`,
+                            inline: true
+                        },
                     ])
 
                     //When server is running show embed with different color and thumbnail
-                    if (serverInfo.at(1) === "running\n") 
+                    if (serverInfo.at(1) === "running") 
                     {
                         msgEmbed
                         .setColor('#0x62ff00')
@@ -60,7 +67,27 @@ export default new Command({
                 }
                 break;
             case "start":
-                console.log("Hallo");
+                try 
+                {
+                    const status = (await exec(`hcloud server list MinecraftServer -o columns=status -o noheader`)).stdout.replace('\n','');
+                    if (status === 'running') {
+                        interaction.followUp('Der Server läuft schon ♾️');
+                    }
+                    else
+                    {
+                        const powerStatus = await exec(`hcloud server poweron MinecraftServer`);
+                        console.log(powerStatus.stdout); 
+                        if (powerStatus.stdout.includes('started')) 
+                        {
+                            interaction.followUp(`Server wurde gestartet ✅`); 
+                        }    
+                    } 
+                }    
+                catch (error) 
+                {
+                    console.error(error);
+                    interaction.followUp(`${error.message}`);
+                } 
                 break;
             default:
                 break;
