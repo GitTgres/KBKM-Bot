@@ -1,0 +1,123 @@
+---
+- name: Ensure wireguard DKMS package is removed
+  ansible.builtin.apt:
+    name:
+      - wireguard-dkms
+    state: absent
+
+- name: Install wireguard package
+  package:
+    name:
+      - wireguard 
+    state: latest
+
+- name: Gather instance facts
+  ansible.builtin.setup:
+
+- name: Enable wireguard kernel module
+  community.general.modprobe:
+    name: wireguard
+    state: present
+  register: wireguard__register_module_enabled
+  until: wireguard__register_module_enabled is succeeded
+  retries: 10
+  delay: 10
+  failed_when: wireguard__register_module_enabled is failure
+
+- name: Generate keys | Check wg syncconf subcommand status
+  block:
+    - name: Register if config/private key already exist on target host
+      ansible.builtin.stat:
+        path: /etc/wireguard/wg0.conf
+      register: wireguard__register_config_file
+
+    - name: Get wg subcommands
+      ansible.builtin.command: "wg --help"
+      register: wireguard__register_subcommands
+      changed_when: false
+      check_mode: false
+
+    - name: Check if wg syncconf subcommand is available
+      ansible.builtin.set_fact:
+        wg_syncconf: "{{ 'syncconf:' in wireguard__register_subcommands.stdout }}"
+
+    - name: Show syncconf subcommand status
+      ansible.builtin.debug:
+        var: wg_syncconf  
+
+- name: Wireguard private key handling for new keys
+  block:
+    - name: Generate wireguard private key
+      ansible.builtin.command: "wg genkey"
+      register: wireguard__register_private_key
+      changed_when: false     
+
+    - name: Set private key fact
+      ansible.builtin.set_fact:
+        wireguard_private_key: "{{ wireguard__register_private_key.stdout }}"
+  when:
+    - not wireguard__register_config_file.stat.exists
+    - wireguard_private_key is not defined
+
+- name: Wireguard private key handling for existing keys
+  block:
+    - name: Read wireguard config file
+      ansible.builtin.slurp:
+        src: /etc/wireguard/wg0.conf
+      register: wireguard__register_config
+
+    - name: Set private key fact
+      ansible.builtin.set_fact:
+        wireguard_private_key: "{{ wireguard__register_config['content'] | b64decode | regex_findall('PrivateKey = (.*)') | first }}"
+      
+    - name: Stop wireguard
+      ansible.builtin.service:
+        name: wg-quick@wg0
+        state: stopped
+  when:
+    - wireguard__register_config_file.stat.exists
+    - wireguard_private_key is not defined
+
+- name: Derive wireguard public key
+  ansible.builtin.command: "wg pubkey"
+  args:
+    stdin: "{{ wireguard_private_key }}"
+  register: wireguard__register_public_key
+  changed_when: false
+  check_mode: false
+
+- name: Set public key fact
+  ansible.builtin.set_fact:
+    wireguard__fact_public_key: "{{ wireguard__register_public_key.stdout }}"
+
+- name: Show public key (server)
+  ansible.builtin.debug:
+    var: wireguard__register_public_key.stdout 
+
+- name: Create wireguard configuration directory
+  ansible.builtin.file:
+    dest: /etc/wireguard
+    state: directory
+    mode: 0700
+
+- name: Generate wireguard configuration file (server)
+  ansible.builtin.template:
+    src: server_wg0.conf.j2
+    dest: /etc/wireguard/wg0.conf
+    owner: root
+    group: root
+    mode: 0600
+    force: yes
+
+- name: Ensure legacy reload-module-on-update is absent
+  ansible.builtin.file:
+    dest: /etc/wireguard/.reload-module-on-update
+    state: absent
+
+- name: Enable and persist ip forwarding
+  sysctl:
+    name: net.ipv4.ip_forward
+    value: "1"
+    state: present
+    sysctl_set: yes
+    reload: yes
