@@ -1,0 +1,21 @@
+---
+- hosts: localhost
+  #become: yes
+  vars: #custom venv for ansible with hetzner hcloud
+    ansible_python_interpreter: /home/tobi/python-venvs/ansible/bin/python3
+  vars_files: 
+    - vars/vault.yml
+  tasks:
+    - import_tasks: tasks/hetzner_management.yml
+
+- hosts: hetzner_{{ type }}
+  #become: yes
+  vars_files:    
+    - vars/vars.yml
+
+  tasks:
+    - import_tasks: tasks/initial_config.yml
+
+- name: Configure wireguard
+  import_playbook: ../configure_wireguard/configure_wireguard.yml
+  when: false

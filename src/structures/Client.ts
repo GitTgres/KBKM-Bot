@@ -45,7 +45,7 @@ export class ExtendedClient extends Client {
                         options: [
                             {
                                 name: "playlist",
-                                description: "Playlist mit welcher gestartet werden soll (Mario, Spider-man, 80s)",
+                                description: "Playlist mit welcher gestartet werden soll",
                                 required: false,
                                 type: Constants.ApplicationCommandOptionTypes.STRING,
                                 choices: [
@@ -131,6 +131,46 @@ export class ExtendedClient extends Client {
                                 description: 'Startet den Minecraft Server',
                                 type: Constants.ApplicationCommandOptionTypes.SUB_COMMAND,
                                 options: [
+                                    {
+                                        name: "standort",
+                                        description: "Standort des Servers",
+                                        required: true,
+                                        type: Constants.ApplicationCommandOptionTypes.STRING,
+                                        choices: [
+                                            {
+                                                name: `🇩🇪 Falkenstein`,
+                                                value: "fsn1"
+                                            },
+                                            {
+                                                name: "🇩🇪 Nürnberg",
+                                                value: "nbg1"
+                                            },
+                                            {
+                                                name: "🇫🇮 Helsinki",
+                                                value: "helsinki1"
+                                            },
+                                            {
+                                                name: "🇺🇸 Ashburn",
+                                                value: "ash"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        name: "typ",
+                                        description: "Typ des Servers",
+                                        required: true,
+                                        type: Constants.ApplicationCommandOptionTypes.STRING,
+                                        choices: [
+                                            {
+                                                name: `Minecraft Server`,
+                                                value: "fsn1"
+                                            },
+                                            {
+                                                name: "VPN",
+                                                value: "nbg1"
+                                            }
+                                        ]
+                                    },
                                     {
                                         name: 'hidden',
                                         description: 'Nur dir wird angezeigt, dass der Minecraft Server gestartet wird',

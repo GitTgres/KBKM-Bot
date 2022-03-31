@@ -1,0 +1,25 @@
+---
+- hosts: hetzner_vpn
+  #become: yes
+  vars_files:    
+    - vars/vars.yml
+
+  tasks:
+    - import_tasks: tasks/wireguard_server.yml
+
+- hosts: localhost
+  #become: yes
+  vars: #custom venv for ansible with hetzner hcloud
+    ansible_python_interpreter: /home/tobi/python-venvs/ansible/bin/python3
+  vars_files: 
+    - vars/vault.yml
+  tasks:
+    - import_tasks: tasks/wireguard_client.yml
+
+- hosts: hetzner_vpn
+  #become: yes
+  vars_files:
+    - vars/vars.yml
+
+  tasks:
+    - import_tasks: tasks/copy_public_key.yml

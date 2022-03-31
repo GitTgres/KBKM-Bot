@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/GitTgres/Watch2GetherBot#readme",
   "dependencies": {
+    "chalk": "^4.1.2",
     "discord.js": "^13.6.0",
     "dotenv": "^16.0.0",
     "glob": "^7.2.0",

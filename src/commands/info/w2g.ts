@@ -121,6 +121,6 @@ export default new Command({
 
             interaction.followUp({embeds: [msgEmbed]});
         }
-
+        global.botAvailable = true;
     }
 });

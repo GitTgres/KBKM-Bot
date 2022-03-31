@@ -5,5 +5,6 @@ export default new Command({
     description: "Antwortet mit pong",
     run: async ({ interaction }) => {
         interaction.followUp("pong");
+        global.botAvailable = true;
     }
 });

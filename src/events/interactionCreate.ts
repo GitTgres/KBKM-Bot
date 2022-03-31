@@ -4,7 +4,9 @@ import { Event } from "../structures/Event";
 import { ExtendedInteraction } from "../typings/Command";
 
 export default new Event("interactionCreate", async (interaction) => {
-    // Chat Input Commands    
+    console.log(`Bot erreichbar: ${global.botAvailable}`);
+    if (!global.botAvailable) return;
+    global.botAvailable = false;
     if (interaction.isCommand()) {
         const command = client.commands.get(interaction.commandName);
         if (command.name === "w2g" || command.name === "mc-server") 
@@ -24,7 +26,6 @@ export default new Event("interactionCreate", async (interaction) => {
         }
         if (!command)
             return interaction.followUp("You have used a non existent command");
-
         command.run({
             args: interaction.options as CommandInteractionOptionResolver,
             client,

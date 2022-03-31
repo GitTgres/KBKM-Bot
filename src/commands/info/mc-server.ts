@@ -3,6 +3,10 @@ import child from "child_process";
 import { MessageEmbed } from "discord.js";
 import util from 'util';
 const exec = util.promisify(child.exec);
+import { spawn } from 'child_process';
+import chalk from "chalk";
+
+const sleep = (delay: number) => new Promise ((resolve) => setTimeout(resolve, delay));
 
 export default new Command({
     name: "mc-server",
@@ -14,13 +18,25 @@ export default new Command({
             case "info":
                 try 
                 {
-                    const serverInfo = (await exec(`hcloud server list MinecraftServer -o columns=ipv4,status,location -o noheader`)).stdout.split("   ");
+                    const serverInfo = (await exec(`/home/tobi/go/bin/hcloud server list MinecraftServer -o columns=ipv4,status,location -o noheader`)).stdout.split("   ");
                     console.log(serverInfo);
 
                     let standort = serverInfo.at(2).replace('\n','');
                     if (standort.includes('nbg')) 
                     {
-                        standort = 'Nürnberg'
+                        standort = '🇩🇪 Nürnberg'
+                    }
+                    else if (standort.includes('fsn'))
+                    {
+                        standort = '🇩🇪 Falkenstein'
+                    }
+                    else if (standort.includes('hel'))
+                    {
+                        standort = '🇫🇮 Helsinki'
+                    }
+                    else if (standort.includes('ash'))
+                    {
+                        standort = '🇺🇸 Ashburn'
                     }
 
                     
@@ -39,7 +55,7 @@ export default new Command({
                         },
                         {
                             name: "Standort",
-                            value: `🇩🇪 ${standort}`,
+                            value: `${standort}`,
                             inline: true
                         },
                     ])
@@ -63,34 +79,42 @@ export default new Command({
                 catch (error) 
                 {
                     console.error(error);
-                    interaction.followUp(`${error.message}`);
+                    interaction.followUp(`${error.message} ❌`);
                 }
                 break;
             case "start":
                 try 
                 {
-                    const status = (await exec(`hcloud server list MinecraftServer -o columns=status -o noheader`)).stdout.replace('\n','');
+                    const status = (await exec(`/home/tobi/go/bin/hcloud server list MinecraftServer -o columns=status -o noheader`)).stdout.replace('\n','');
                     if (status === 'running') {
+                        console.log('Der Server läuft schon ♾️')
                         interaction.followUp('Der Server läuft schon ♾️');
                     }
                     else
                     {
-                        const powerStatus = await exec(`hcloud server poweron MinecraftServer`);
-                        console.log(powerStatus.stdout); 
-                        if (powerStatus.stdout.includes('started')) 
-                        {
-                            interaction.followUp(`Server wurde gestartet ✅`); 
-                        }    
+                        const res = spawn('ansible-playbook', ['run.yml'], {cwd: '/home/tobi/Watch2GetherBot/hetzner_server_management'})
+                    
+                        res.stdout.pipe(process.stdout)
+                        let log = "";
+                        res.stdout.on('data', (data: string) => {
+                            log = log + data
+                            interaction.editReply(`\`\`\`${log}\`\`\``);
+                        });
+
+                        res.stderr.on('data', (data) => {
+                            console.log(chalk.red(`child stderr:\n${data}`));
+                        });
                     } 
                 }    
                 catch (error) 
                 {
                     console.error(error);
-                    interaction.followUp(`${error.message}`);
+                    interaction.followUp(`${error.message} ❌`);
                 } 
                 break;
             default:
                 break;
         }
+        global.botAvailable = true;
     }
 });
