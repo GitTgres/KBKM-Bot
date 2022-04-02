@@ -6,11 +6,9 @@ const exec = util.promisify(child.exec);
 import { spawn } from 'child_process';
 import chalk from "chalk";
 
-const sleep = (delay: number) => new Promise ((resolve) => setTimeout(resolve, delay));
-
 export default new Command({
-    name: "mc-server",
-    description: "Ermöglicht die Kontrolle über einen Minecraft Server",
+    name: "server",
+    description: "Ermöglicht die Kontrolle über einen Server",
     run: async ({ interaction }) => {
     
         switch (interaction.options.getSubcommand()) 
@@ -41,7 +39,7 @@ export default new Command({
 
                     
                     const msgEmbed = new MessageEmbed()
-                    .setTitle('Hier die Infos über den Minecraft Server')
+                    .setTitle('Hier die Infos über den Server')
                     .addFields([
                         {
                             name: "Serveradresse",

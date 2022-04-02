@@ -9,7 +9,7 @@ export default new Event("interactionCreate", async (interaction) => {
     global.botAvailable = false;
     if (interaction.isCommand()) {
         const command = client.commands.get(interaction.commandName);
-        if (command.name === "w2g" || command.name === "mc-server") 
+        if (command.name === "w2g" || command.name === "server") 
         {
             if (interaction.options.getString('hidden') !== null) 
             {

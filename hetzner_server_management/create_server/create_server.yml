@@ -18,4 +18,4 @@
 
 - name: Configure wireguard
   import_playbook: ../configure_wireguard/configure_wireguard.yml
-  when: false
+  when: type == "vpn"

@@ -80,7 +80,8 @@ export class ExtendedClient extends Client {
                     //const cmd = await this.guilds.cache.get(guildId)?.commands.fetch()
                     //console.log(cmd)
                     
-                    this.guilds.cache.get(guildId)?.commands.permissions.add({ command: '956354385192054837', permissions: [
+                    
+                    /* this.guilds.cache.get(guildId)?.commands.permissions.add({ command: '956354385192054837', permissions: [
                         {
                             id: '956575646270767164',
                             type: 'ROLE',
@@ -93,7 +94,7 @@ export class ExtendedClient extends Client {
                             type: 'USER',
                             permission: true
                         }
-                    ]});
+                    ]}); */
                     break;
                 case "ping":
                     this.guilds.cache.get(guildId)?.commands.create(
@@ -102,19 +103,19 @@ export class ExtendedClient extends Client {
                         description: command.description
                     })
                     break;
-                case "mc-server":
+                case "server":
                     this.guilds.cache.get(guildId)?.commands.create({
                         name: command.name,
                         description: command.description,
                         options: [
                             {
                                 name: 'info',
-                                description: 'Gibt Infos über den Minecraft Server aus',
+                                description: 'Gibt Infos über den Server aus',
                                 type: Constants.ApplicationCommandOptionTypes.SUB_COMMAND,
                                 options: [
                                     {
                                         name: 'hidden',
-                                        description: 'Die Infos über den Minecraft Server werden nur dir angezeigt',
+                                        description: 'Die Infos über den Server werden nur dir angezeigt',
                                         required: false,
                                         type: Constants.ApplicationCommandOptionTypes.STRING,
                                         choices: [
@@ -128,7 +129,7 @@ export class ExtendedClient extends Client {
                             },
                             {
                                 name: 'start',
-                                description: 'Startet den Minecraft Server',
+                                description: 'Startet den Server',
                                 type: Constants.ApplicationCommandOptionTypes.SUB_COMMAND,
                                 options: [
                                     {
@@ -173,7 +174,7 @@ export class ExtendedClient extends Client {
                                     },
                                     {
                                         name: 'hidden',
-                                        description: 'Nur dir wird angezeigt, dass der Minecraft Server gestartet wird',
+                                        description: 'Nur dir wird angezeigt, dass der Server gestartet wird',
                                         required: false,
                                         type: Constants.ApplicationCommandOptionTypes.STRING,
                                         choices: [
