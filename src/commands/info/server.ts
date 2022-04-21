@@ -16,7 +16,8 @@ export default new Command({
             case "info":
                 try 
                 {
-                    const serverInfo = (await exec(`/home/tobi/go/bin/hcloud server list MinecraftServer -o columns=ipv4,status,location -o noheader`)).stdout.split("   ");
+                    const serverType = interaction.options.getString('typ');
+                    const serverInfo = (await exec(`/home/tobi/go/bin/hcloud server list ${serverType} -o columns=ipv4,status,location -o noheader`)).stdout.split("   ");
                     console.log(serverInfo);
 
                     let standort = serverInfo.at(2).replace('\n','');
@@ -83,21 +84,25 @@ export default new Command({
             case "start":
                 try 
                 {
-                    const status = (await exec(`/home/tobi/go/bin/hcloud server list MinecraftServer -o columns=status -o noheader`)).stdout.replace('\n','');
-                    if (status === 'running') {
+                    const serverType = interaction.options.getString('typ');
+                    //Hier noch dran arbeiten
+                    const status = (await exec(`/home/tobi/go/bin/hcloud server list ${serverType} -o columns=status -o noheader`)).stdout.replace('\n','');
+                    console.log(status);
+                    
+                    if (status === '') {
                         console.log('Der Server läuft schon ♾️')
                         interaction.followUp('Der Server läuft schon ♾️');
                     }
                     else
                     {
-                        const res = spawn('ansible-playbook', ['run.yml'], {cwd: '/home/tobi/Watch2GetherBot/hetzner_server_management'})
+                        const res = spawn('ansible-playbook', ['create_server.yml', '-e', 'type=minecraft', '-e', 'location=fsn1'], {cwd: '/home/tobi/Watch2GetherBot/hetzner_server_management/create_server'})
                     
                         res.stdout.pipe(process.stdout)
-                        let log = "";
+                        /* let log = "";
                         res.stdout.on('data', (data: string) => {
                             log = log + data
                             interaction.editReply(`\`\`\`${log}\`\`\``);
-                        });
+                        }); */
 
                         res.stderr.on('data', (data) => {
                             console.log(chalk.red(`child stderr:\n${data}`));

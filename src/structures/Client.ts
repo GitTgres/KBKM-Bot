@@ -164,11 +164,11 @@ export class ExtendedClient extends Client {
                                         choices: [
                                             {
                                                 name: `Minecraft Server`,
-                                                value: "fsn1"
+                                                value: "minecraft"
                                             },
                                             {
                                                 name: "VPN",
-                                                value: "nbg1"
+                                                value: "vpn"
                                             }
                                         ]
                                     },
