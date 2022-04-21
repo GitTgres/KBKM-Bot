@@ -12,3 +12,16 @@ Useful links:
 - https://stackoverflow.com/questions/48514072/how-to-automatically-pass-vault-password-when-running-ansible-playbook
 - https://www.duckdns.org/install.jsp?tab=linux-cron
 - https://www.shellhacks.com/disable-ssh-host-key-checking/
+
+Quick setup:
+
+- git clone https://github.com/GitTgres/Watch2GetherBot.git
+- npm init
+- npm install
+- config.json anlegen:
+
+{
+    "token": Hier den Token vom Discord Developer Portal eintragen,
+    "prefix": "!" //This prefix is only needed for older versions
+}
+- npm run start:dev
