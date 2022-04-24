@@ -16,61 +16,69 @@ export default new Command({
             case "info":
                 try 
                 {
-                    const serverType = interaction.options.getString('typ');
-                    const serverInfo = (await exec(`/home/tobi/go/bin/hcloud server list ${serverType} -o columns=ipv4,status,location -o noheader`)).stdout.split("   ");
-                    console.log(serverInfo);
+                    //const serverType = interaction.options.getString('typ');
+                    const serverInfo = (await exec(`/home/tobi/go/bin/hcloud server list -o columns=name,status,location -o noheader`)).stdout.split("\n");
 
-                    let standort = serverInfo.at(2).replace('\n','');
-                    if (standort.includes('nbg')) 
-                    {
-                        standort = '🇩🇪 Nürnberg'
-                    }
-                    else if (standort.includes('fsn'))
-                    {
-                        standort = '🇩🇪 Falkenstein'
-                    }
-                    else if (standort.includes('hel'))
-                    {
-                        standort = '🇫🇮 Helsinki'
-                    }
-                    else if (standort.includes('ash'))
-                    {
-                        standort = '🇺🇸 Ashburn'
-                    }
-
-                    
                     const msgEmbed = new MessageEmbed()
-                    .setTitle('Hier die Infos über den Server')
-                    .addFields([
-                        {
-                            name: "Serveradresse",
-                            value: `${serverInfo.at(0)}:25565`,
-                            inline: true
-                        },
-                        {
-                            name: "Status",
-                            value: serverInfo.at(1),
-                            inline: true
-                        },
-                        {
-                            name: "Standort",
-                            value: `${standort}`,
-                            inline: true
-                        },
-                    ])
+                    .setTitle('Server Informationen');
 
-                    //When server is running show embed with different color and thumbnail
-                    if (serverInfo.at(1) === "running") 
+                    serverInfo.forEach((server) => {
+                        if (server === '') return;
+                        const info = server.split("   ");
+                        const filteredInfos = info.filter(function (el) {
+                            return el != '';
+                        });
+
+                        let standort = filteredInfos.at(2);
+                        if (standort.includes('nbg')) 
+                        {
+                            standort = '🇩🇪 Nürnberg'
+                        }
+                        else if (standort.includes('fsn'))
+                        {
+                            standort = '🇩🇪 Falkenstein'
+                        }
+                        else if (standort.includes('hel'))
+                        {
+                            standort = '🇫🇮 Helsinki'
+                        }
+                        else if (standort.includes('ash'))
+                        {
+                            standort = '🇺🇸 Ashburn'
+                        }
+
+                        msgEmbed.addFields([
+                            {
+                                name: "Serveradresse",
+                                value: `kbkm-${filteredInfos.at(0)}\@duckdns.org`,
+                                inline: true
+                            },
+                            {
+                                name: "Status",
+                                value: filteredInfos.at(1),
+                                inline: true
+                            },
+                            {
+                                name: "Standort",
+                                value: `${standort}`,
+                                inline: true
+                            },
+                        ])
+
+                    });
+
+                    //When all servers arerunning show embed with different color and thumbnail
+                    if (serverInfo.join("").includes("off")) 
                     {
                         msgEmbed
-                        .setColor('#0x62ff00')
-                        .setThumbnail('https://media1.tenor.com/images/d5a2e3786faa13b1fdb8b27c28d496ee/tenor.gif?itemid=14327746')
+                        .setColor('#0xff0000')
+                        .setThumbnail('https://c.tenor.com/Qq-mR0Livi0AAAAC/angry-stadium-man-stadium.gif');
                     }
                     else
                     {
                         msgEmbed
-                        .setColor('#0xff0000')
-                        .setThumbnail('https://c.tenor.com/Qq-mR0Livi0AAAAC/angry-stadium-man-stadium.gif')
+                        .setColor('#0x62ff00')
+                        .setThumbnail('https://media1.tenor.com/images/d5a2e3786faa13b1fdb8b27c28d496ee/tenor.gif?itemid=14327746');
                     }
 
                     interaction.followUp({embeds: [msgEmbed]});
