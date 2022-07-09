@@ -93,28 +93,27 @@ export default new Command({
                 try 
                 {
                     const serverType = interaction.options.getString('typ');
-                    //Hier noch dran arbeiten
-                    const status = (await exec(`/home/tobi/go/bin/hcloud server list ${serverType} -o columns=status -o noheader`)).stdout.replace('\n','');
-                    console.log(status);
+                    const status = (await exec(`/home/tobi/go/bin/hcloud server describe -o format={{.Status}} ${serverType}`)).stdout.replace('\n','');
                     
-                    if (status === '') {
+                    if (status === 'running') 
+                    {
                         console.log('Der Server läuft schon ♾️')
                         interaction.followUp('Der Server läuft schon ♾️');
                     }
                     else
                     {
-                        const res = spawn('ansible-playbook', ['create_server.yml', '-e', 'type=minecraft', '-e', 'location=fsn1'], {cwd: '/home/tobi/Watch2GetherBot/hetzner_server_management/create_server'})
+                        //const res = spawn('ansible-playbook', ['create_server.yml', '-e', 'type=vpn', '-e', 'location=ash'], {cwd: '/home/tobi/Watch2GetherBot/hetzner_server_management/create_server'})
                     
-                        res.stdout.pipe(process.stdout)
+                        //res.stdout.pipe(process.stdout)
                         /* let log = "";
                         res.stdout.on('data', (data: string) => {
                             log = log + data
                             interaction.editReply(`\`\`\`${log}\`\`\``);
                         }); */
 
-                        res.stderr.on('data', (data) => {
-                            console.log(chalk.red(`child stderr:\n${data}`));
-                        });
+                        //res.stderr.on('data', (data) => {
+                        //    console.log(chalk.red(`child stderr:\n${data}`));
+                        //});
                     } 
                 }    
                 catch (error) 

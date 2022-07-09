@@ -46,11 +46,12 @@ export default new Command({
 
         await page.goto("https://w2g.tv/?lang=de");
         //await page.goto("https://google.de");
+        await page.waitForSelector('#qc-cmp2-ui > div.qc-cmp2-footer.qc-cmp2-footer-overlay.qc-cmp2-footer-scrolled > div > button:nth-child(2)');
 
-        await page.waitForSelector('#qc-cmp2-ui > div.qc-cmp2-footer.qc-cmp2-footer-overlay.qc-cmp2-footer-scrolled > div > button.css-k8o10q');
-
-        await page.click('#qc-cmp2-ui > div.qc-cmp2-footer.qc-cmp2-footer-overlay.qc-cmp2-footer-scrolled > div > button.css-k8o10q');
+        await page.click('#qc-cmp2-ui > div.qc-cmp2-footer.qc-cmp2-footer-overlay.qc-cmp2-footer-scrolled > div > button:nth-child(2)');
         
+        await page.waitForSelector('#create_room_button');
+
         await page.click('#create_room_button');
     
         await page.waitForSelector('#intro-modal', {visible: true, hidden: false});

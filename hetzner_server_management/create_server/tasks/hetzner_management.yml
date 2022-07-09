@@ -56,7 +56,7 @@
       hetzner.hcloud.hcloud_server:
         name: "{{ server_name }}" #vpn or minecraft
         api_token: "{{ hetzner_token }}"
-        server_type: "{{ server_type }}" #cpx11, cpx21, cx11, cpx41 ... not the type which you type in, in Discord!
+        server_type: "{{ server_type }}" #cpx11, cpx21, cx11, cpx41 ... not the type which you choose in Discord!
         image: ubuntu-20.04
         firewalls: "{{ server_firewall }}" #firewall id
         location: "{{ server_location }}" #fsn1, nbg1, hel1, ash
