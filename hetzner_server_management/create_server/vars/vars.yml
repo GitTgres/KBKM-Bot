@@ -1,0 +1,13 @@
+packages:
+  - vim
+  - neofetch
+  - htop
+  - tmux
+
+wireguard_address: 172.31.0.1/32
+wireguard_postup:
+  - iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+  - iptables -A FORWARD -i wg0 -j ACCEPT
+wireguard_postdown:
+  - iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE
+  - iptables -D FORWARD -i wg0 -j ACCEPT

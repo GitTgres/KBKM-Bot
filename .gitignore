@@ -1,2 +1,6 @@
-config.json
-/node_modules
+dist/
+node_modules/
+.env
+hetzner_server_management/create_server/vars/secrets.sh
+hetzner_server_management/configure_wireguard/vars/secrets.sh
+hetzner_server_management/create_server/scripts

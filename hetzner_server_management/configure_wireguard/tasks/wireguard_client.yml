@@ -1,0 +1,59 @@
+---
+- name: Register if config/private key already exist on target host
+  ansible.builtin.stat:
+    path: /mnt/c/Users/tgres/Desktop/wireguard/wg0.conf
+  register: wireguard__register_config_file
+
+- name: Wireguard private key handling for new keys
+  block:
+    - name: Generate wireguard private key
+      ansible.builtin.command: "wg genkey"
+      register: wireguard__register_private_key
+      changed_when: false     
+
+    - name: Set private key fact
+      ansible.builtin.set_fact:
+        wireguard_private_key: "{{ wireguard__register_private_key.stdout }}"
+  when:
+    - not wireguard__register_config_file.stat.exists
+    - wireguard_private_key is not defined
+
+- name: Wireguard private key handling for existing keys
+  block:
+    - name: Read wireguard config file
+      ansible.builtin.slurp:
+        src: /mnt/c/Users/tgres/Desktop/wireguard/wg0.conf
+      register: wireguard__register_config
+
+    - name: Set private key fact
+      ansible.builtin.set_fact:
+        wireguard_private_key: "{{ wireguard__register_config['content'] | b64decode | regex_findall('PrivateKey = (.*)') | first }}"
+      
+  when:
+    - wireguard__register_config_file.stat.exists
+    - wireguard_private_key is not defined
+
+- name: Derive wireguard public key
+  ansible.builtin.command: "wg pubkey"
+  args:
+    stdin: "{{ wireguard_private_key }}"
+  register: wireguard__register_public_key
+  changed_when: false
+  check_mode: false
+
+- name: Set public key fact
+  ansible.builtin.set_fact:
+    wireguard__fact_public_key: "{{ wireguard__register_public_key.stdout }}"
+
+- name: Show public key (client)
+  ansible.builtin.debug:
+    var: wireguard__register_public_key.stdout 
+
+- name: Generate wireguard configuration file (client)
+  ansible.builtin.template:
+    src: client_wg0.conf.j2
+    dest: /mnt/c/Users/tgres/Desktop/wireguard/wg0.conf
+    owner: tobi
+    group: tobi
+    mode: 0600
+    force: true

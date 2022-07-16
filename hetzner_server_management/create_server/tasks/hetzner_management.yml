@@ -1,0 +1,86 @@
+---
+- name: Parameters taken from Discord input
+  set_fact:
+    server_name: "{{ type }}" #Attention: In Discord you can specify the Server type (vpn or minecraft) which will be the name in the hetzner cloud console 
+    server_location: "{{ location }}" #fsn1, nbg1, hel1, ash
+
+- name: Gather server info before potential server creation
+  hcloud_server_info:
+    name: "{{ server_name }}" #vpn or minecraft
+    api_token: "{{ hetzner_token }}"
+  register: server_info
+
+- name: Print server info before potential server creation
+  debug:
+    var: server_info
+
+- name: Determine server configuration based on the parameters which you type in, in Discord and create server
+  block:
+    - name: Vpn with location not in the US
+      set_fact:
+        server_type: cx11 #cpx11, cpx21, cx11, cpx41 ... not the type which you type in, in Discord!
+        server_firewall: "342614"
+        server_ssh_key: kbkm-vpn
+      when: server_name == "vpn" and server_location != "ash"
+
+    - name: Vpn server with location in the US #you have to choose cpx11 here, because hetzner doesn't offer the cx11 in the US
+      set_fact:
+        server_type: cpx11 #cpx11, cpx21, cx11, cpx41 ... not the type which you type in, in Discord!
+        server_firewall: "342614"
+        server_ssh_key: kbkm-vpn
+      when: server_name == "vpn" and server_location == "ash" 
+
+    - name: Minecraft server
+      set_fact:
+        server_type: cpx21 #cpx11, cpx21, cx11, cpx41 ... not the type which you type in, in Discord!
+        server_firewall: "350181"
+        server_ssh_key: kbkm-minecraft
+      when: server_name == "minecraft"
+
+    - name: Print server configuration
+      debug:
+        msg:
+        - "Server type: {{ server_name }}"
+        - "Server location: {{ server_location }}"
+        - "Server hardware: {{ server_type }}"
+        - "Server firewall: {{ server_firewall }}"
+        - "Server ssh-key: {{ server_ssh_key }}"
+
+    - name: Delete already existing server with the same name # i.e. if a vpn/minecraft server already exists it gets deleted
+      hetzner.hcloud.hcloud_server:
+        name: "{{ server_name }}" #vpn or minecraft
+        api_token: "{{ hetzner_token }}"
+        state: absent
+
+    - name: Create server based on configuration
+      hetzner.hcloud.hcloud_server:
+        name: "{{ server_name }}" #vpn or minecraft
+        api_token: "{{ hetzner_token }}"
+        server_type: "{{ server_type }}" #cpx11, cpx21, cx11, cpx41 ... not the type which you choose in Discord!
+        image: ubuntu-20.04
+        firewalls: "{{ server_firewall }}" #firewall id
+        location: "{{ server_location }}" #fsn1, nbg1, hel1, ash
+        force: yes
+        ssh_keys:
+          - "{{ server_ssh_key }}"
+        state: present
+
+    - name: Gather server info after server creation 
+      hcloud_server_info:
+        name: "{{ server_name }}" #vpn or minecraft
+        api_token: "{{ hetzner_token }}"
+      register: server_info_after_creation
+
+    - name: Print server info after server creation
+      debug:
+        var: server_info_after_creation
+    - name: Update ip address for duckdns kbkm-{{ server_info_after_creation.hcloud_server_info[0].name }}.duckdns.org -> {{ server_info_after_creation.hcloud_server_info[0].ipv4_address }} #the script duck.sh updates the "current ip" entry in your duckdns.org account
+      shell: "/home/tobi/Watch2GetherBot/hetzner_server_management/create_server/scripts/duck.sh kbkm-{{ server_info_after_creation.hcloud_server_info[0].name }} {{ server_info_after_creation.hcloud_server_info[0].ipv4_address }}"
+
+    - name: Check every 3 second if ssh is available (maximal 300 seconds) #cf. https://docs.ansible.com/ansible/latest/collections/ansible/builtin/wait_for_module.html#parameter-timeout 
+      wait_for:
+        port: 22
+        host: '{{ server_info_after_creation.hcloud_server_info[0].ipv4_address }}'
+        search_regex: OpenSSH
+        delay: 3
+  when: (server_info.hcloud_server_info[0].name is undefined) or (server_name != server_info.hcloud_server_info[0].name) or (server_location != server_info.hcloud_server_info[0].location)

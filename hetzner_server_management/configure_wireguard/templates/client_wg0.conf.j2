@@ -1,0 +1,10 @@
+[Interface]
+PrivateKey = {{ wireguard_private_key }}
+Address = 172.31.0.2/32
+DNS = 8.8.8.8
+
+[Peer] 
+PublicKey = {{ hostvars['hetzner_vpn'].wireguard__fact_public_key }}
+Endpoint = kbkm-vpn.duckdns.org:51820 
+AllowedIPs = 0.0.0.0/0
+PersistentKeepalive = 30
