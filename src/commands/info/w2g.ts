@@ -2,30 +2,6 @@ import { Command } from "../../structures/Command";
 import { MessageEmbed } from "discord.js";
 import puppeteer = require('puppeteer');
 
-const sleep = (delay: number) => new Promise ((resolve) => setTimeout(resolve, delay));
-
-async function insertPlaylist(page: puppeteer.Page, playlistLink: string) 
-{
-    await page.setViewport({
-        width: 1920,
-        height: 1080,
-        deviceScaleFactor: 1,
-      });
-
-    await page.waitForSelector('#search-bar-input');
-
-    await page.type('#search-bar-input',`${playlistLink}`);
-
-    await page.waitForSelector('#search-bar-form > div > button');
-
-    await page.click('#search-bar-form > div > button');
-
-    await page.waitForSelector('#w2g-search-results > div.w2g-pl-import-button > div');
-    await sleep(2000);
-
-    await page.click('#w2g-search-results > div.w2g-pl-import-button > div');
-}
-
 export default new Command({
     name: "w2g",
     description: "Antwortet mit einem Watch2Gether Link",
@@ -33,26 +9,23 @@ export default new Command({
 
         const start = Date.now();
 
-        const playlistTitle = interaction.options.getString('playlist');
-        console.log(`Playlist Titel: ${playlistTitle}`);
-
         try 
         {
-        //const browser = await puppeteer.launch({"headless": true, args: ['--disable-dev-shm-usage', '--no-sandbox', '--disable-gpu']});
+        const browser = await puppeteer.launch({"headless": true, args: ['--disable-dev-shm-usage', '--no-sandbox', '--disable-gpu']});
         //const browser = await puppeteer.launch({"headless": false, executablePath: 'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe', args: ['--disable-dev-shm-usage', '--no-sandbox', '--disable-gpu']});
-        const browser = await puppeteer.launch({"headless": true, executablePath: '/usr/bin/google-chrome', args: ['--disable-dev-shm-usage', '--no-sandbox', '--disable-gpu']});
+        //const browser = await puppeteer.launch({"headless": true, executablePath: '/usr/bin/google-chrome', args: ['--disable-dev-shm-usage', '--no-sandbox', '--disable-gpu']});
         
         const page = await browser.newPage();
 
-        await page.goto("https://w2g.tv/?lang=de");
+        page.goto("https://w2g.tv/?lang=de");
         //await page.goto("https://google.de");
         await page.waitForSelector('#qc-cmp2-ui > div.qc-cmp2-footer.qc-cmp2-footer-overlay.qc-cmp2-footer-scrolled > div > button:nth-child(2)');
 
         await page.click('#qc-cmp2-ui > div.qc-cmp2-footer.qc-cmp2-footer-overlay.qc-cmp2-footer-scrolled > div > button:nth-child(2)');
         
-        await page.waitForSelector('#create_room_button');
+        await page.waitForSelector('.bg-w2g-yellow');
 
-        await page.click('#create_room_button');
+        await page.click('.bg-w2g-yellow');
     
         await page.waitForSelector('#intro-modal', {visible: true, hidden: false});
         
@@ -81,28 +54,7 @@ export default new Command({
 
         interaction.followUp({embeds: [msgEmbed]});
 
-        if (playlistTitle !== null) 
-        {
-            switch (playlistTitle) 
-            {
-                case "mario":
-                    await insertPlaylist(page, 'https://www.youtube.com/watch?v=LMuFA_XBtWk&list=PLTY-fHX-ZIGwdsXnDUPhGYLkhvH9TmtXD&index=3&ab_channel=DavidBosch');
-                    await browser.close(); 
-                    break;
-                case "spider-man":
-                    await insertPlaylist(page, 'https://www.youtube.com/watch?v=Y88LVU7MAe4&list=PLOWDZJe5wh3j2HkdsxNe7yDeZrow5XRsD');
-                    await browser.close();
-                    break;
-                case "80s":
-                    await insertPlaylist(page, 'https://www.youtube.com/watch?v=dQw4w9WgXcQ&list=PLCD0445C57F2B7F41&ab_channel=RickAstley');
-                    await browser.close();
-                    break;
-            }
-        }
-        else
-        {
-            await browser.close(); 
-        } 
+        await browser.close(); 
         
         } 
         catch (error) 

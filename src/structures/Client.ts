@@ -44,26 +44,6 @@ export class ExtendedClient extends Client {
                         default_permission: false,
                         options: [
                             {
-                                name: "playlist",
-                                description: "Playlist mit welcher gestartet werden soll",
-                                required: false,
-                                type: Constants.ApplicationCommandOptionTypes.STRING,
-                                choices: [
-                                    {
-                                        name: "mario",
-                                        value: "mario"
-                                    },
-                                    {
-                                        name: "spider-man",
-                                        value: "spider-man"
-                                    },
-                                    {
-                                        name: "80s",
-                                        value: "80s"
-                                    },
-                                ]
-                            },
-                            {
                                 name: 'hidden',
                                 description: 'Der Watch2Gether Link wird nur dir angezeigt',
                                 required: false,
@@ -87,21 +67,14 @@ export class ExtendedClient extends Client {
                             type: 'ROLE',
                             permission: true
                         }
-                    ]});
+                    ]});*//*
                     this.guilds.cache.get(guildId)?.commands.permissions.add({ command: '956354385192054837', permissions: [
                         {
                             id: '386465125801918465',
                             type: 'USER',
-                            permission: true
+                            permission: false
                         }
-                    ]}); */
-                    break;
-                case "ping":
-                    this.guilds.cache.get(guildId)?.commands.create(
-                        {
-                        name: command.name,
-                        description: command.description
-                    })
+                    ]});*/
                     break;
                 case "server":
                     this.guilds.cache.get(guildId)?.commands.create({
@@ -139,7 +112,7 @@ export class ExtendedClient extends Client {
                                         type: Constants.ApplicationCommandOptionTypes.STRING,
                                         choices: [
                                             {
-                                                name: `🇩🇪 Falkenstein`,
+                                                name: "🇩🇪 Falkenstein",
                                                 value: "fsn1"
                                             },
                                             {
@@ -162,10 +135,10 @@ export class ExtendedClient extends Client {
                                         required: true,
                                         type: Constants.ApplicationCommandOptionTypes.STRING,
                                         choices: [
-                                            {
+                                            /*{
                                                 name: `Minecraft Server`,
                                                 value: "minecraft"
-                                            },
+                                            },*/
                                             {
                                                 name: "VPN",
                                                 value: "vpn"

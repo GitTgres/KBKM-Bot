@@ -2,7 +2,7 @@
 - hosts: localhost
   #become: yes
   vars: #custom venv for ansible with hetzner hcloud
-    ansible_python_interpreter: /home/tobi/python-venvs/ansible/bin/python3
+    ansible_python_interpreter: /home/tobi/python-venv/ansible/bin/python
   vars_files: 
     - vars/vault.yml
   tasks:
@@ -19,3 +19,7 @@
 - name: Configure wireguard
   import_playbook: ../configure_wireguard/configure_wireguard.yml
   when: type == "vpn"
+
+#- name: Configure minecraft server
+#  import_playbook: ../configure_minecraft/configure_minecraft.yml
+#  when: type == "minecraft"

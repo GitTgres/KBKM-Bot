@@ -1,0 +1,5 @@
+packages:
+  - vim
+  - neofetch
+  - htop
+  - tmux
