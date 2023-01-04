@@ -112,7 +112,7 @@ export class ExtendedClient extends Client {
                                         type: Constants.ApplicationCommandOptionTypes.STRING,
                                         choices: [
                                             {
-                                                name: "🇩🇪 Falkenstein",
+                                                name: `Falkenstein`,
                                                 value: "fsn1"
                                             },
                                             {
@@ -135,10 +135,10 @@ export class ExtendedClient extends Client {
                                         required: true,
                                         type: Constants.ApplicationCommandOptionTypes.STRING,
                                         choices: [
-                                            /*{
+                                            {
                                                 name: `Minecraft Server`,
                                                 value: "minecraft"
-                                            },*/
+                                            },
                                             {
                                                 name: "VPN",
                                                 value: "vpn"

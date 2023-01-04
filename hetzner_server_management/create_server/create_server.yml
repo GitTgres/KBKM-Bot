@@ -20,6 +20,6 @@
   import_playbook: ../configure_wireguard/configure_wireguard.yml
   when: type == "vpn"
 
-#- name: Configure minecraft server
-#  import_playbook: ../configure_minecraft/configure_minecraft.yml
-#  when: type == "minecraft"
+- name: Configure minecraft server
+  import_playbook: ../configure_minecraft/configure_minecraft.yml
+  when: type == "minecraft"

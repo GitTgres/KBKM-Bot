@@ -1,0 +1,49 @@
+---
+  
+- name: Install docker dependencies
+  apt:
+    name: "{{item}}"
+    state: present
+    update_cache: yes
+  loop:
+    - apt-transport-https
+    - ca-certificates
+    - curl
+    - gnupg-agent
+    - software-properties-common
+
+- name: Add docker gpg key
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+
+- name: Add docker repo
+  apt_repository:
+    repo: deb https://download.docker.com/linux/ubuntu jammy stable
+    state: present
+
+- name: Install docker
+  apt:
+    name: "{{item}}"
+    state: latest
+    update_cache: yes
+  loop:
+    - docker-ce
+    - docker-ce-cli
+    - docker-compose
+
+- name: Start docker
+  service:
+    name: docker
+    state: started
+    enabled: yes
+
+- name: Download docker compose file for minecraft server
+  ansible.builtin.get_url:
+    url: https://raw.githubusercontent.com/GitTgres/Minecraftserver/main/docker-compose.yml
+    dest: /root/docker-compose.yml
+    mode: '0440'
+
+- name: Start minecraft server
+  shell: "/usr/bin/docker-compose up -d"
+

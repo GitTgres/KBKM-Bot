@@ -92,132 +92,57 @@ export default new Command({
             case "start":
                 const serverType = interaction.options.getString('typ');
                 const serverLocation = interaction.options.getString('standort');
-                let status;
-                //const status = (await exec(`/home/tobi/go/bin/hcloud server describe -o format={{.Status}} ${serverType}`)).stdout.replace('\n','');
-                try 
-                {
-                    let status = await exec(`/home/tobi/go/bin/hcloud server describe -o format={{.Status}} ${serverType}`);  
-                    status = status; 
-                } catch (error) {
-                    console.error(error);
-                    status = error;
-                }
-                if (status != null && status.stderr.includes("server not found")) 
-                {
 
-                    console.log("Server konnte nicht gefunden werden!!!!!!!!!");
-                    //create new server
-                    const res = spawn('ansible-playbook', ['create_server.yml', '-e', `type=${serverType}`, '-e', `location=${serverLocation}`], {cwd: '/home/tobi/Watch2GetherBot/hetzner_server_management/create_server'})
-                    
-                    res.stdout.pipe(process.stdout)
-                    //logging in discord
-                    /*
-                    let log = "";
-                    res.stdout.on('data', (data: string) => {
-                        if ((log + data).length > 1900) {
-                            log = "";
-                            log = log + data
-                        }else{
-                            log = log + data
-                        }
-                        interaction.editReply(`\`\`\`${log}\`\`\``);
-                    });*/
-                    if (serverType === 'vpn') 
-                    {
-                        res.on("close", code => {
-                            const child = spawn('qrencode', ['-t', 'png', '-r', 'wg.conf', '-o', 'wg.png'], {cwd: '/home/tobi/Desktop/wireguard'});
-                            child.on("close", code => {
-                                const attachment = new MessageAttachment("/home/tobi/Desktop/wireguard/wg.png")
-                                const msgEmbed = new MessageEmbed()
-                                    .setTitle('QR-Code für Wireguard App')
-                                    .setColor('#0x62ff00')
-                                    .setImage("attachment://wg.png");
-
-                                    let standort = serverLocation;
-                                
-                                    if (standort.includes('nbg')) 
-                                    {
-                                        standort = '🇩🇪 Nürnberg'
-                                    }
-                                    else if (standort.includes('fsn'))
-                                    {
-                                        standort = '🇩🇪 Falkenstein'
-                                    }
-                                    else if (standort.includes('hel'))
-                                    {
-                                        standort = '🇫🇮 Helsinki'
-                                    }
-                                    else if (standort.includes('ash'))
-                                    {
-                                        standort = '🇺🇸 Ashburn'
-                                    }
-
-                                msgEmbed.addFields([
-                                    {
-                                        name: "Status",
-                                        value: "running",
-                                        inline: true
-                                    },
-                                    {
-                                        name: "Standort",
-                                        value: `${standort}`,
-                                        inline: true
-                                    },
-                                ])
-                                
-                                interaction.followUp({embeds: [msgEmbed], files: [attachment, "/home/tobi/Desktop/wireguard/wg.conf"]});
-                            })
-                        })   
+                //create new server
+                const res = spawn('ansible-playbook', ['create_server.yml', '-e', `type=${serverType}`, '-e', `location=${serverLocation}`], {cwd: '/home/tobi/Watch2GetherBot/hetzner_server_management/create_server'})
+                
+                res.stdout.pipe(process.stdout)
+                //logging in discord
+                /*
+                let log = "";
+                res.stdout.on('data', (data: string) => {
+                    if ((log + data).length > 1900) {
+                        log = "";
+                        log = log + data
+                    }else{
+                        log = log + data
                     }
-                }
-                else
+                    interaction.editReply(`\`\`\`${log}\`\`\``);
+                });*/
+                if (serverType === 'vpn') 
                 {
-                    console.log('Der Server läuft schon ♾️')
-                    //interaction.followUp('Der Server läuft schon ♾️');
-                    if (serverType === 'vpn') 
-                    {
+                    res.on("close", code => {
+                        const child = spawn('qrencode', ['-t', 'png', '-r', 'wg.conf', '-o', 'wg.png'], {cwd: '/home/tobi/Desktop/wireguard'});
+                        child.on("close", code => {
+                            const attachment = new MessageAttachment("/home/tobi/Desktop/wireguard/wg.png")
+                            const msgEmbed = new MessageEmbed()
+                                .setTitle('QR-Code für Wireguard App')
+                                .setColor('#0x62ff00')
+                                .setImage("attachment://wg.png");
 
-                        const attachment = new MessageAttachment("/home/tobi/Desktop/wireguard/wg.png")
-                        const msgEmbed = new MessageEmbed()
-                            .setTitle('QR-Code für Wireguard App')
-                            .setColor('#0x62ff00')
-                            .setFooter({
-                                text: "Ein VPN Server existiert bereits.\nDie Erstellung eines weiteren VPN Servers ist nicht zulässig."
-                            })
+                                let standort = serverLocation;
                             
-                            .setImage("attachment://wg.png");
+                                if (standort.includes('nbg')) 
+                                {
+                                    standort = '🇩🇪 Nürnberg'
+                                }
+                                else if (standort.includes('fsn'))
+                                {
+                                    standort = '🇩🇪 Falkenstein'
+                                }
+                                else if (standort.includes('hel'))
+                                {
+                                    standort = '🇫🇮 Helsinki'
+                                }
+                                else if (standort.includes('ash'))
+                                {
+                                    standort = '🇺🇸 Ashburn'
+                                }
 
-
-                        const serverInfo = (await exec(`/home/tobi/go/bin/hcloud server list -o columns=name,status,location -o noheader`)).stdout.split("\n");
-                        serverInfo.forEach((server) => {
-                            if (server === '') return;
-                            const info = server.split("   ");
-                            const filteredInfos = info.filter(function (el) {
-                                return el != '';
-                            });
-    
-                            let standort = filteredInfos.at(2);
-                            if (standort.includes('nbg')) 
-                            {
-                                standort = '🇩🇪 Nürnberg'
-                            }
-                            else if (standort.includes('fsn'))
-                            {
-                                standort = '🇩🇪 Falkenstein'
-                            }
-                            else if (standort.includes('hel'))
-                            {
-                                standort = '🇫🇮 Helsinki'
-                            }
-                            else if (standort.includes('ash'))
-                            {
-                                standort = '🇺🇸 Ashburn'
-                            }
-    
                             msgEmbed.addFields([
                                 {
                                     name: "Status",
-                                    value: filteredInfos.at(1),
+                                    value: "running",
                                     inline: true
                                 },
                                 {
@@ -226,12 +151,17 @@ export default new Command({
                                     inline: true
                                 },
                             ])
-    
-                        });
-
-
-                        interaction.followUp({embeds: [msgEmbed], files: [attachment, "/home/tobi/Desktop/wireguard/wg.conf"]});   
-                    }
+                            
+                            interaction.followUp({embeds: [msgEmbed], files: [attachment, "/home/tobi/Desktop/wireguard/wg.conf"]});
+                        })
+                    })   
+                }
+                else if (serverType === 'minecraft') 
+                {
+                    res.on("close", code => {
+                        console.log("Minecraft server fertig.");
+                        interaction.followUp("Minecraft server fertig.");
+                    })
                 }
                         //res.stderr.on('data', (data) => {
                         //    console.log(chalk.red(`child stderr:\n${data}`));
