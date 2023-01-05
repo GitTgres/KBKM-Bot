@@ -57,24 +57,6 @@ export class ExtendedClient extends Client {
                             }
                         ]
                     })
-                    //const cmd = await this.guilds.cache.get(guildId)?.commands.fetch()
-                    //console.log(cmd)
-                    
-                    
-                    /* this.guilds.cache.get(guildId)?.commands.permissions.add({ command: '956354385192054837', permissions: [
-                        {
-                            id: '956575646270767164',
-                            type: 'ROLE',
-                            permission: true
-                        }
-                    ]});*//*
-                    this.guilds.cache.get(guildId)?.commands.permissions.add({ command: '956354385192054837', permissions: [
-                        {
-                            id: '386465125801918465',
-                            type: 'USER',
-                            permission: false
-                        }
-                    ]});*/
                     break;
                 case "server":
                     this.guilds.cache.get(guildId)?.commands.create({
@@ -112,7 +94,7 @@ export class ExtendedClient extends Client {
                                         type: Constants.ApplicationCommandOptionTypes.STRING,
                                         choices: [
                                             {
-                                                name: `Falkenstein`,
+                                                name: `🇩🇪 Falkenstein`,
                                                 value: "fsn1"
                                             },
                                             {
@@ -126,6 +108,10 @@ export class ExtendedClient extends Client {
                                             {
                                                 name: "🇺🇸 Ashburn",
                                                 value: "ash"
+                                            },
+                                            {
+                                                name: "🇺🇸 Hillsboro",
+                                                value: "hil"
                                             }
                                         ]
                                     },

@@ -2,7 +2,7 @@
 - name: Parameters taken from Discord input
   set_fact:
     server_name: "{{ type }}" #Attention: In Discord you can specify the Server type (vpn or minecraft) which will be the name in the hetzner cloud console 
-    server_location: "{{ location }}" #fsn1, nbg1, hel1, ash
+    server_location: "{{ location }}" #fsn1, nbg1, hel1, ash, hil
 
 - name: Gather server info before potential server creation
   hcloud_server_info:
@@ -19,14 +19,14 @@
     server_type: cx11 #cpx11, cpx21, cx11, cpx41 ... not the type which you type in, in Discord!
     server_firewall: VpnFirewall
     server_ssh_key: kbkm-vpn
-  when: server_name == "vpn" and server_location != "ash"
+  when: (server_name == "vpn") and (server_location != "ash") or (server_location != "hil")
 
 - name: Vpn server with location in the US #you have to choose cpx11 here, because hetzner doesn't offer the cx11 in the US
   set_fact:
     server_type: cpx11 #cpx11, cpx21, cx11, cpx41 ... not the type which you type in, in Discord!
     server_firewall: VpnFirewall
     server_ssh_key: kbkm-vpn
-  when: server_name == "vpn" and server_location == "ash" 
+  when: (server_name == "vpn") and (server_location == "ash") or (server_location == "hil")
 
 - name: Minecraft server
   set_fact:
@@ -58,7 +58,7 @@
     server_type: "{{ server_type }}" #cpx11, cpx21, cx11, cpx41 ... not the type which you choose in Discord!
     image: ubuntu-22.04
     firewalls: "{{ server_firewall }}"
-    location: "{{ server_location }}" #fsn1, nbg1, hel1, ash
+    location: "{{ server_location }}" #fsn1, nbg1, hel1, ash, hil
     force: true
     ssh_keys:
       - "{{ server_ssh_key }}"

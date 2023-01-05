@@ -29,6 +29,15 @@ export default new Command({
                             return el != '';
                         });
 
+                        let port = filteredInfos.at(0);
+                        if (port === "vpn") {
+                            port = "51820";
+                        }
+                        else if (port === "minecraft")
+                        {
+                            port = "25565";
+                        }
+
                         let standort = filteredInfos.at(2);
                         if (standort.includes('nbg')) 
                         {
@@ -46,11 +55,15 @@ export default new Command({
                         {
                             standort = '🇺🇸 Ashburn'
                         }
+                        else if (standort.includes('hil'))
+                        {
+                            standort = '🇺🇸 Hillsboro'
+                        }
 
                         msgEmbed.addFields([
                             {
                                 name: "Serveradresse",
-                                value: `kbkm-${filteredInfos.at(0)}.duckdns.org`,
+                                value: `kbkm-${filteredInfos.at(0)}.duckdns.org:${port}`,
                                 inline: true
                             },
                             {
@@ -66,22 +79,35 @@ export default new Command({
                         ])
 
                     });
+                    console.log("Hier sind Infos über den server:" + serverInfo + "!");
 
                     //When all servers are running -> show embed with different color and thumbnail
-                    if (serverInfo.join("").includes("off")) 
+                    if (serverInfo[0] == "") 
                     {
                         msgEmbed
                         .setColor('#0xff0000')
+                        .setDescription("Kein Server ist online.")
                         .setThumbnail('https://c.tenor.com/Qq-mR0Livi0AAAAC/angry-stadium-man-stadium.gif');
+
+                        interaction.followUp({embeds: [msgEmbed]});
                     }
                     else
                     {
+                        const attachment = new MessageAttachment("/home/tobi/Desktop/wireguard/wg.png");
+
                         msgEmbed
+                        .setColor('#0x62ff00');
+
+                        const msgEmbed2 = new MessageEmbed()
+
+                        msgEmbed2
                         .setColor('#0x62ff00')
-                        .setThumbnail('https://media1.tenor.com/images/d5a2e3786faa13b1fdb8b27c28d496ee/tenor.gif?itemid=14327746');
+                        .setTitle('QR-Code für Wireguard App')
+                        .setImage("attachment://wg.png");
+
+                        interaction.followUp({embeds: [msgEmbed2, msgEmbed], files: [attachment, "/home/tobi/Desktop/wireguard/wg.conf"]});
                     }
 
-                    interaction.followUp({embeds: [msgEmbed]});
                 } 
                 catch (error) 
                 {
@@ -114,7 +140,7 @@ export default new Command({
                     res.on("close", code => {
                         const child = spawn('qrencode', ['-t', 'png', '-r', 'wg.conf', '-o', 'wg.png'], {cwd: '/home/tobi/Desktop/wireguard'});
                         child.on("close", code => {
-                            const attachment = new MessageAttachment("/home/tobi/Desktop/wireguard/wg.png")
+                            const attachment = new MessageAttachment("/home/tobi/Desktop/wireguard/wg.png");
                             const msgEmbed = new MessageEmbed()
                                 .setTitle('QR-Code für Wireguard App')
                                 .setColor('#0x62ff00')
@@ -137,6 +163,10 @@ export default new Command({
                                 else if (standort.includes('ash'))
                                 {
                                     standort = '🇺🇸 Ashburn'
+                                }
+                                else if (standort.includes('hil'))
+                                {
+                                    standort = '🇺🇸 Hillsboro'
                                 }
 
                             msgEmbed.addFields([
