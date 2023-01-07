@@ -3,6 +3,11 @@
   set_fact:
     server_name: "{{ type }}" #Attention: In Discord you can specify the Server type (vpn or minecraft) which will be the name in the hetzner cloud console 
     server_location: "{{ location }}" #fsn1, nbg1, hel1, ash, hil
+    hetzner_token: "{{ lookup('ansible.builtin.env', 'hetznerToken') }}"
+
+- name: Print hetzner token
+  debug:
+    var: hetzner_token
 
 - name: Gather server info before potential server creation
   hcloud_server_info:

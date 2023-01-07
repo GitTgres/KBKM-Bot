@@ -11,9 +11,9 @@ export default new Command({
 
         try 
         {
-        const browser = await puppeteer.launch({"headless": true, args: ['--disable-dev-shm-usage', '--no-sandbox', '--disable-gpu']});
+        //const browser = await puppeteer.launch({"headless": true, args: ['--disable-dev-shm-usage', '--no-sandbox', '--disable-gpu']});
         //const browser = await puppeteer.launch({"headless": false, executablePath: 'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe', args: ['--disable-dev-shm-usage', '--no-sandbox', '--disable-gpu']});
-        //const browser = await puppeteer.launch({"headless": true, executablePath: '/usr/bin/google-chrome', args: ['--disable-dev-shm-usage', '--no-sandbox', '--disable-gpu']});
+        const browser = await puppeteer.launch({"headless": true, executablePath: '/usr/bin/google-chrome', args: ['--disable-dev-shm-usage', '--no-sandbox', '--disable-gpu']});
         
         const page = await browser.newPage();
 

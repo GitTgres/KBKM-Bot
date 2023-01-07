@@ -1,10 +1,8 @@
 ---
 - hosts: localhost
   #become: yes
-  vars: #custom venv for ansible with hetzner hcloud
-    ansible_python_interpreter: /home/tobi/python-venv/ansible/bin/python
-  vars_files: 
-    - vars/vault.yml
+  vars_files:    
+    - vars/vars.yml
   tasks:
     - import_tasks: tasks/hetzner_management.yml
 
@@ -12,7 +10,6 @@
   #become: yes
   vars_files:    
     - vars/vars.yml
-
   tasks:
     - import_tasks: tasks/initial_config.yml
 

@@ -4,3 +4,5 @@ node_modules/
 hetzner_server_management/create_server/vars/secrets.sh
 hetzner_server_management/configure_wireguard/vars/secrets.sh
 hetzner_server_management/create_server/scripts
+kbkm-minecraft
+kbkm-vpn
