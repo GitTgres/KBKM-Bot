@@ -19,7 +19,9 @@ RUN apt update; \
     pip3 install ansible==7.1.0; \
     pip3 install hcloud==1.18.2; \
     apt-get install qrencode -y; \
-    apt-get install openssh-server -y
+    apt-get install openssh-server -y; \
+    apt-get install curl -y; \
+    apt install -y wireguard
 
 WORKDIR /usr/src/KBKM-Bot
 
@@ -27,8 +29,11 @@ RUN mkdir -p /usr/src/KBKM-Bot/wireguard
 RUN mkdir -p /usr/src/.ssh
 
 COPY package*.json ./
-COPY kbkm-vpn /usr/src/.ssh/
-COPY kbkm-minecraft /usr/src/.ssh/
+COPY kbkm-vpn /root/.ssh/
+COPY kbkm-minecraft /root/.ssh/
+COPY kbkm-vpn.pub /root/.ssh/
+COPY kbkm-minecraft.pub /root/.ssh/
+COPY ssh_config /etc/ssh/
 
 RUN npm install
 

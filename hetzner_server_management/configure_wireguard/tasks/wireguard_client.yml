@@ -1,7 +1,7 @@
 ---
 - name: Register if config/private key already exist on target host
   ansible.builtin.stat:
-    path: /home/tobi/Desktop/wireguard/wg.conf
+    path: /usr/src/KBKM-Bot/wireguard/wg.conf
   register: wireguard__register_config_file
 
 - name: Wireguard private key handling for new keys
@@ -22,7 +22,7 @@
   block:
     - name: Read wireguard config file
       ansible.builtin.slurp:
-        src: /home/tobi/Desktop/wireguard/wg.conf
+        src: /usr/src/KBKM-Bot/wireguard/wg.conf
       register: wireguard__register_config
 
     - name: Set private key fact
@@ -52,8 +52,8 @@
 - name: Generate wireguard configuration file (client)
   ansible.builtin.template:
     src: client_wg.conf.j2
-    dest: /home/tobi/Desktop/wireguard/wg.conf
-    owner: tobi
-    group: tobi
+    dest: /usr/src/KBKM-Bot/wireguard/wg.conf
+    owner: root
+    group: root
     mode: 0600
     force: true

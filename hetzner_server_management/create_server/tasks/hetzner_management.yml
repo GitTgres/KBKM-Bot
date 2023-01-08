@@ -80,7 +80,7 @@
     var: server_info_after_creation
 
 - name: Update ip address for duckdns kbkm-{{ server_info_after_creation.hcloud_server_info[0].name }}.duckdns.org -> {{ server_info_after_creation.hcloud_server_info[0].ipv4_address }} #the script duck.sh updates the "current ip" entry in your duckdns.org account
-  shell: "/home/tobi/Watch2GetherBot/hetzner_server_management/create_server/scripts/duck.sh kbkm-{{ server_info_after_creation.hcloud_server_info[0].name }} {{ server_info_after_creation.hcloud_server_info[0].ipv4_address }}"
+  shell: "/usr/src/KBKM-Bot/hetzner_server_management/create_server/scripts/duck.sh kbkm-{{ server_info_after_creation.hcloud_server_info[0].name }} {{ server_info_after_creation.hcloud_server_info[0].ipv4_address }}"
 
 - name: Check every 3 second if ssh is available (maximal 300 seconds) #cf. https://docs.ansible.com/ansible/latest/collections/ansible/builtin/wait_for_module.html#parameter-timeout 
   wait_for:
