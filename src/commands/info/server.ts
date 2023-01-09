@@ -120,8 +120,9 @@ export default new Command({
                 const serverLocation = interaction.options.getString('standort');
 
                 //create new server
-                const res = spawn('ansible-playbook', ['create_server.yml', '-e', `type=${serverType}`, '-e', `location=${serverLocation}`], {cwd: '/home/tobi/Watch2GetherBot/hetzner_server_management/create_server'})
+                const res = spawn('ansible-playbook', ['create_server.yml', '-e', `type=${serverType}`, '-e', `location=${serverLocation}`], {cwd: '/usr/src/KBKM-Bot/hetzner_server_management/create_server'})
                 
+                console.log("Starte ansible playbook.");
                 res.stdout.pipe(process.stdout)
                 //logging in discord
                 /*
@@ -138,9 +139,9 @@ export default new Command({
                 if (serverType === 'vpn') 
                 {
                     res.on("close", code => {
-                        const child = spawn('qrencode', ['-t', 'png', '-r', 'wg.conf', '-o', 'wg.png'], {cwd: '/home/tobi/Desktop/wireguard'});
+                        const child = spawn('qrencode', ['-t', 'png', '-r', 'wg.conf', '-o', 'wg.png'], {cwd: '/usr/src/KBKM-Bot/wireguard'});
                         child.on("close", code => {
-                            const attachment = new MessageAttachment("/home/tobi/Desktop/wireguard/wg.png");
+                            const attachment = new MessageAttachment("/usr/src/KBKM-Bot/wireguard/wg.png");
                             const msgEmbed = new MessageEmbed()
                                 .setTitle('QR-Code für Wireguard App')
                                 .setColor('#0x62ff00')
@@ -182,7 +183,7 @@ export default new Command({
                                 },
                             ])
                             
-                            interaction.followUp({embeds: [msgEmbed], files: [attachment, "/home/tobi/Desktop/wireguard/wg.conf"]});
+                            interaction.followUp({embeds: [msgEmbed], files: [attachment, "/usr/src/KBKM-Bot/wireguard/wg.conf"]});
                         })
                     })   
                 }

@@ -33,3 +33,8 @@ Quick setup:
 - create a .env file with botToken, guildId and environment
 - create a shell script, which updates the ip address in your duckdns dashboard
 - npm run start:dev
+
+## Docker
+
+- docker build -t tobdocker/kbkm-bot:1.0 .
+- docker run --name kbkm-bot -e botToken=<> -e guildId=<> -e hetznerToken=<> -d tobdocker/kbkm-bot:1.0
