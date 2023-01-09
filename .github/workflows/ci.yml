@@ -7,6 +7,31 @@ on:
     branches: [ master ]
 
 jobs:
+  get_ssh_key:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install SSH key of vpn server
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_KEY_VPN }}
+          name: kbkm-vpn
+          known_hosts: unnecessary
+          config: |
+            Host kbkm-vpn.duckdns.org
+               IdentityFile ~/.ssh/kbkm-vpn
+               StrictHostKeyChecking no
+               UserKnownHostsFile=/dev/null
+      - name: Install SSH key of minecraft server
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_KEY_MINECRAFT }}
+          name: kbkm-minecraft
+          known_hosts: unnecessary
+          config: |                                         # will be appended to existing .ssh/config
+            Host kbkm-minecraft.duckdns.org
+               IdentityFile ~/.ssh/kbkm-minecraft
+               StrictHostKeyChecking no
+               UserKnownHostsFile=/dev/null
   build_container:
     runs-on: ubuntu-latest
     steps:
