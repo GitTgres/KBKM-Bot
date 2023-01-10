@@ -32,6 +32,9 @@ jobs:
                IdentityFile ~/.ssh/kbkm-minecraft
                StrictHostKeyChecking no
                UserKnownHostsFile=/dev/null
+      - name: Print location of ssh file
+        run: echo $(ls -la /home/runner/.ssh)
+        shell: bash
   build_container:
     runs-on: ubuntu-latest
     steps:
