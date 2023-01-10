@@ -7,7 +7,7 @@ on:
     branches: [ master ]
 
 jobs:
-  get_ssh_key:
+  install_ssh_keys_and_build_docker_container:
     runs-on: ubuntu-latest
     steps:
       - name: Install SSH key of vpn server
@@ -35,9 +35,12 @@ jobs:
       - name: Print location of ssh file
         run: echo $(ls -la /home/runner/.ssh)
         shell: bash
-  build_container:
-    runs-on: ubuntu-latest
-    steps:
+      - name: Copy ssh key
+        run: |
+          cp /home/runner/.ssh/kbkm-vpn /home/runner/
+          cp /home/runner/.ssh/kbkm-minecraft /home/runner/
+        shell: bash
+
       - uses: actions/checkout@v2
       - name: Setup up Docker Buildx
         uses: docker/setup-buildx-action@v1

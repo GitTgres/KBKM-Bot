@@ -29,8 +29,8 @@ RUN mkdir -p /usr/src/KBKM-Bot/wireguard
 RUN mkdir -p /usr/src/.ssh
 
 COPY package*.json ./
-COPY ~/.ssh/kbkm-vpn /root/.ssh/
-COPY ~/.ssh/kbkm-minecraft /root/.ssh/
+COPY kbkm-vpn /root/.ssh/
+COPY kbkm-minecraft /root/.ssh/
 COPY kbkm-vpn.pub /root/.ssh/
 COPY kbkm-minecraft.pub /root/.ssh/
 
