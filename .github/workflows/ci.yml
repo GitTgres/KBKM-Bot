@@ -34,9 +34,10 @@ jobs:
                UserKnownHostsFile=/dev/null
 
       - uses: actions/checkout@v2
-      - name: Copy ssh key
+      - name: Copy ssh key and ssh config
         run: |
-          cp /home/runner/.ssh/kbkm-vpn /home/runner/work/KBKM-Bot/KBKM-Bot/
+          cp /home/runner/.ssh/config /home/runner/work/KBKM-Bot/KBKM-Bot/
+          cp /home/runner/.ssh/kbkm-minecraft /home/runner/work/KBKM-Bot/KBKM-Bot/
           cp /home/runner/.ssh/kbkm-minecraft /home/runner/work/KBKM-Bot/KBKM-Bot/
         shell: bash
       - name: Setup up Docker Buildx
@@ -55,7 +56,7 @@ jobs:
         with:
           images: tobdocker/kbkm-bot
           tags: |
-            type=raw,value={{date 'YYYYMMDD'}}
+            type=semver,pattern={{version}}
           
       - name: Build Docker Image
         id: docker_build

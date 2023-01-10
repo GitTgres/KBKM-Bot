@@ -34,6 +34,9 @@ COPY kbkm-minecraft /root/.ssh/
 COPY kbkm-vpn.pub /root/.ssh/
 COPY kbkm-minecraft.pub /root/.ssh/
 
+COPY config /etc/ssh
+RUN mv config ssh_config
+
 RUN npm install
 
 COPY . .
