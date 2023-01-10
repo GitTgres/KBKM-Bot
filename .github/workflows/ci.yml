@@ -57,6 +57,8 @@ jobs:
           images: tobdocker/kbkm-bot
           tags: |
             type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=raw,value={{sha}},enable=${{ github.ref_type != 'tag' }}
           
       - name: Build Docker Image
         id: docker_build
@@ -65,6 +67,7 @@ jobs:
           context: .
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }} 
+          labels: ${{ steps.metadata.outputs.labels }}
           
       - name: Snyk Container Test
         continue-on-error: true
