@@ -11,7 +11,17 @@ The Watch2Gether link generator comes in handy if you are in a discord voice cha
 https://user-images.githubusercontent.com/39748835/211038844-be6491f8-4ea9-425c-a6ee-7615261126bc.mp4
 
 
-Useful links:
+
+## Start bot
+
+🚧 Currently the bot is under construction. 🚧<br />
+When you commit your code to Github, a Github workflow gets activated. The workflow builds a docker image out of your code, scans this image with snyk and finally pushes the image to docker hub. After that, you can start your container with the following command: (Fill in your credential at the respective "<>" position) 
+
+```
+docker run --name kbkm-bot -e botToken=<> -e guildId=<> -e hetznerToken=<> -e duckdnsToken=<> -d tobdocker/kbkm-bot:<version>
+```
+
+### Useful links:
 
 - https://github.com/hetznercloud/hcloud-python/issues/139
 - https://pypi.org/project/hcloud/
@@ -24,17 +34,3 @@ Useful links:
 - https://www.shellhacks.com/disable-ssh-host-key-checking/
 - https://github.com/githubixx/ansible-role-wireguard
 - https://github.com/ansible-collections/hetzner.hcloud/issues/94
-
-Quick setup:
-
-- git clone https://github.com/GitTgres/Watch2GetherBot.git
-- npm init
-- npm install
-- create a .env file with botToken, guildId and environment
-- create a shell script, which updates the ip address in your duckdns dashboard
-- npm run start:dev
-
-## Docker
-
-- docker build -t tobdocker/kbkm-bot:1.0 .
-- docker run --name kbkm-bot -e botToken=<> -e guildId=<> -e hetznerToken=<> -d tobdocker/kbkm-bot:1.0
