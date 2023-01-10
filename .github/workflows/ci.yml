@@ -56,9 +56,10 @@ jobs:
         with:
           images: tobdocker/kbkm-bot
           tags: |
+            type=ref,event=branch
+            type=ref,event=pr
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
-            type=raw,value={{sha}},enable=${{ github.ref_type != 'tag' }}
           
       - name: Build Docker Image
         id: docker_build
