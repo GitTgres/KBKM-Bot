@@ -37,7 +37,7 @@ jobs:
       - name: Copy ssh key and ssh config
         run: |
           cp /home/runner/.ssh/config /home/runner/work/KBKM-Bot/KBKM-Bot/
-          cp /home/runner/.ssh/kbkm-minecraft /home/runner/work/KBKM-Bot/KBKM-Bot/
+          cp /home/runner/.ssh/kbkm-vpn /home/runner/work/KBKM-Bot/KBKM-Bot/
           cp /home/runner/.ssh/kbkm-minecraft /home/runner/work/KBKM-Bot/KBKM-Bot/
         shell: bash
       - name: Setup up Docker Buildx
