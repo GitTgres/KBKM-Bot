@@ -51,9 +51,10 @@ jobs:
         id: docker_build
         uses: docker/build-push-action@v2
         with:
+          context: .
           push: false
           load: true
-          tags: tobdocker/kbkm-bot:latest         
+          tags: tobdocker/kbkm-bot:latest   
       - name: Snyk Container Test
         continue-on-error: true
         uses: snyk/actions/docker@master
