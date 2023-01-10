@@ -54,7 +54,6 @@ jobs:
         with:
           context: .
           push: true
-          load: true
           tags: tobdocker/kbkm-bot:latest   
           
       - name: Snyk Container Test
