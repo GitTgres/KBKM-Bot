@@ -7,7 +7,7 @@ on:
     branches: [ master ]
 
 jobs:
-  install_ssh_keys_and_build_docker_container:
+  build_container:
     runs-on: ubuntu-latest
     steps:
       - name: Install SSH key of vpn server
@@ -32,9 +32,6 @@ jobs:
                IdentityFile ~/.ssh/kbkm-minecraft
                StrictHostKeyChecking no
                UserKnownHostsFile=/dev/null
-      - name: Print location of ssh file
-        run: echo $(ls -la /home/runner/.ssh)
-        shell: bash
 
       - uses: actions/checkout@v2
       - name: Copy ssh key
@@ -42,19 +39,24 @@ jobs:
           cp /home/runner/.ssh/kbkm-vpn /home/runner/work/KBKM-Bot/KBKM-Bot/
           cp /home/runner/.ssh/kbkm-minecraft /home/runner/work/KBKM-Bot/KBKM-Bot/
         shell: bash
-      - name: Print location of ssh file
-        run: echo $(ls -la /home/runner/work/KBKM-Bot/KBKM-Bot)
-        shell: bash
       - name: Setup up Docker Buildx
         uses: docker/setup-buildx-action@v1
+        
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          
       - name: Build Docker Image
         id: docker_build
         uses: docker/build-push-action@v2
         with:
           context: .
-          push: false
+          push: true
           load: true
           tags: tobdocker/kbkm-bot:latest   
+          
       - name: Snyk Container Test
         continue-on-error: true
         uses: snyk/actions/docker@master
@@ -63,3 +65,4 @@ jobs:
         with:
           image: tobdocker/kbkm-bot:latest
           args: --file=Dockerfile
+
