@@ -24,16 +24,11 @@ RUN apt update; \
     apt install -y wireguard; \
     mkdir -p /usr/src/KBKM-Bot/wireguard
 
-COPY kbkm-vpn /root/.ssh/; \
-     kbkm-minecraft /root/.ssh/; \
-     kbkm-vpn.pub /root/.ssh/; \
-     kbkm-minecraft.pub /root/.ssh/
-
-COPY config /etc/ssh/ssh_config
-
 WORKDIR /usr/src/KBKM-Bot
 
 COPY package*.json ./
+COPY kbkm* /root/.ssh/
+COPY config /etc/ssh/ssh_config
 
 RUN npm install
 
