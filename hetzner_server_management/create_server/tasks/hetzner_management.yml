@@ -7,6 +7,15 @@
     vpn_server_domain: "{{ lookup('ansible.builtin.env', 'duckdnsDomainVPN') }}"
     minecraft_server_domain: "{{ lookup('ansible.builtin.env', 'duckdnsDomainMINECRAFT') }}"
 
+- name: Generate ssh_config file
+  ansible.builtin.template:
+    src: ssh_config.j2
+    dest: /etc/ssh/ssh_config
+    owner: root
+    group: root
+    mode: 0600
+    force: yes
+
 - name: Gather server info before potential server creation
   hcloud_server_info:
     name: "{{ server_name }}" #vpn or minecraft

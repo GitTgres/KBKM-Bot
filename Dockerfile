@@ -29,7 +29,6 @@ RUN apt update; \
 WORKDIR /usr/src/KBKM-Bot
 
 COPY package*.json ./
-COPY ssh_config /etc/ssh/ssh_config
 
 RUN npm install
 
