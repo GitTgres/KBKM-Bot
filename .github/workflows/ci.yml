@@ -1,10 +1,10 @@
-name: build docker container and scan the container with snyk
+name: build docker container and scan the container with snyk and push the container to docker hub
 
 on:
   push:
     branches: [ master ]
-  pull_request:
-    branches: [ master ]
+    paths-ignore: 
+      - '**/README.md'
 
 jobs:
   build_and_push_container:
