@@ -4,10 +4,8 @@
     server_name: "{{ type }}" #Attention: In Discord you can specify the Server type (vpn or minecraft) which will be the name in the hetzner cloud console 
     server_location: "{{ location }}" #fsn1, nbg1, hel1, ash, hil
     hetzner_token: "{{ lookup('ansible.builtin.env', 'hetznerToken') }}"
-
-- name: Print hetzner token
-  debug:
-    var: hetzner_token
+    vpn_server_domain: "{{ lookup('ansible.builtin.env', 'duckdnsDomainVPN') }}"
+    minecraft_server_domain: "{{ lookup('ansible.builtin.env', 'duckdnsDomainMINECRAFT') }}"
 
 - name: Gather server info before potential server creation
   hcloud_server_info:
@@ -23,21 +21,21 @@
   set_fact:
     server_type: cx11 #cpx11, cpx21, cx11, cpx41 ... not the type which you type in, in Discord!
     server_firewall: VpnFirewall
-    server_ssh_key: kbkm-vpn
+    server_ssh_key: vpn_ssh_key
   when: (server_name == "vpn") and (server_location != "ash") or (server_location != "hil")
 
 - name: Vpn server with location in the US #you have to choose cpx11 here, because hetzner doesn't offer the cx11 in the US
   set_fact:
     server_type: cpx11 #cpx11, cpx21, cx11, cpx41 ... not the type which you type in, in Discord!
     server_firewall: VpnFirewall
-    server_ssh_key: kbkm-vpn
+    server_ssh_key: vpn_ssh_key
   when: (server_name == "vpn") and (server_location == "ash") or (server_location == "hil")
 
 - name: Minecraft server
   set_fact:
     server_type: cpx21 #cpx11, cpx21, cx11, cpx41 ... not the type which you type in, in Discord!
     server_firewall: MinecraftFirewall
-    server_ssh_key: kbkm-minecraft
+    server_ssh_key: minecraft_ssh_key
   when: server_name == "minecraft"
 
 - name: Print server configuration
@@ -48,6 +46,112 @@
     - "Server hardware: {{ server_type }}"
     - "Server firewall: {{ server_firewall }}"
     - "Server ssh-key: {{ server_ssh_key }}"
+
+- name: Create firewall and ssh key for vpn server
+  block:
+    - name: Create a firewall for vpn server
+      hetzner.hcloud.hcloud_firewall:
+        name: VpnFirewall
+        api_token: "{{ hetzner_token }}"
+        rules:
+          - direction: in
+            protocol: icmp
+            source_ips:
+              - 0.0.0.0/0
+              - ::/0
+            description: allow icmp in
+          - direction: in
+            protocol: tcp
+            source_ips:
+              - 0.0.0.0/0
+              - ::/0
+            port: "22"
+            description: allow ssh in
+          - direction: in
+            protocol: udp
+            source_ips:
+              - 0.0.0.0/0
+              - ::/0
+            port: "51820"
+            description: allow wireguard in
+        state: present
+
+    - name: Generate an OpenSSH keypair for vpn server
+      community.crypto.openssh_keypair:
+        path: /root/.ssh/vpn_ssh_key
+        type: ed25519
+
+    - name: Read in vpn ssh key
+      shell: |
+        cat /root/.ssh/vpn_ssh_key.pub
+      register: public_vpn_ssh_key
+
+    - name: Delete ssh key for vpn server
+      hetzner.hcloud.hcloud_ssh_key:
+        name: vpn_ssh_key
+        api_token: "{{ hetzner_token }}"
+        state: absent
+
+    - name: Create a ssh key for vpn server
+      hetzner.hcloud.hcloud_ssh_key:
+        name: vpn_ssh_key
+        api_token: "{{ hetzner_token }}"
+        public_key: "{{ public_vpn_ssh_key.stdout }}"
+        state: present
+  when: server_name == "vpn"  
+
+- name: Create firewall and ssh key for minecraft server
+  block:
+    - name: Create a firewall for minecraft server
+      hetzner.hcloud.hcloud_firewall:
+        name: MinecraftFirewall
+        api_token: "{{ hetzner_token }}"
+        rules:
+          - direction: in
+            protocol: icmp
+            source_ips:
+              - 0.0.0.0/0
+              - ::/0
+            description: allow icmp in
+          - direction: in
+            protocol: tcp
+            source_ips:
+              - 0.0.0.0/0
+              - ::/0
+            port: "22"
+            description: allow ssh in
+          - direction: in
+            protocol: tcp
+            source_ips:
+              - 0.0.0.0/0
+              - ::/0
+            port: "25565"
+            description: allow minecraft clients to connect
+        state: present
+
+    - name: Generate an OpenSSH keypair for minecraft server
+      community.crypto.openssh_keypair:
+        path: /root/.ssh/minecraft_ssh_key
+        type: ed25519
+
+    - name: Read in minecraft ssh key
+      shell: |
+        cat /root/.ssh/minecraft_ssh_key.pub
+      register: public_minecraft_ssh_key
+
+    - name: Delete ssh key for minecraft server
+      hetzner.hcloud.hcloud_ssh_key:
+        name: minecraft_ssh_key
+        api_token: "{{ hetzner_token }}"
+        state: absent
+
+    - name: Create a ssh key for minecraft server
+      hetzner.hcloud.hcloud_ssh_key:
+        name: minecraft_ssh_key
+        api_token: "{{ hetzner_token }}"
+        public_key: "{{ public_minecraft_ssh_key.stdout }}"
+        state: present
+  when: server_name == "minecraft"
 
 - name: Delete already existing server when the location differs
   hetzner.hcloud.hcloud_server:
@@ -79,8 +183,13 @@
   debug:
     var: server_info_after_creation
 
-- name: Update ip address for duckdns kbkm-{{ server_info_after_creation.hcloud_server_info[0].name }}.duckdns.org -> {{ server_info_after_creation.hcloud_server_info[0].ipv4_address }} #the script duck.sh updates the "current ip" entry in your duckdns.org account
-  shell: "/usr/src/KBKM-Bot/hetzner_server_management/create_server/scripts/duck.sh kbkm-{{ server_info_after_creation.hcloud_server_info[0].name }} {{ server_info_after_creation.hcloud_server_info[0].ipv4_address }}"
+- name: Update ip address for duckdns {{ vpn_server_domain }}.duckdns.org -> {{ server_info_after_creation.hcloud_server_info[0].ipv4_address }} #the script duck.sh updates the "current ip" entry in your duckdns.org account
+  shell: "/usr/src/KBKM-Bot/hetzner_server_management/create_server/scripts/duck.sh {{ vpn_server_domain }} {{ server_info_after_creation.hcloud_server_info[0].ipv4_address }}"
+  when: server_name == "vpn"
+
+- name: Update ip address for duckdns {{ minecraft_server_domain }}.duckdns.org -> {{ server_info_after_creation.hcloud_server_info[0].ipv4_address }} #the script duck.sh updates the "current ip" entry in your duckdns.org account
+  shell: "/usr/src/KBKM-Bot/hetzner_server_management/create_server/scripts/duck.sh {{ minecraft_server_domain }} {{ server_info_after_creation.hcloud_server_info[0].ipv4_address }}"
+  when: server_name == "minecraft"
 
 - name: Check every 3 second if ssh is available (maximal 300 seconds) #cf. https://docs.ansible.com/ansible/latest/collections/ansible/builtin/wait_for_module.html#parameter-timeout 
   wait_for:

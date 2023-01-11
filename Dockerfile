@@ -22,13 +22,14 @@ RUN apt update; \
     apt-get install openssh-server -y; \
     apt-get install curl -y; \
     apt install -y wireguard; \
-    mkdir -p /usr/src/KBKM-Bot/wireguard
+    ansible-galaxy collection install community.crypto; \
+    mkdir -p /usr/src/KBKM-Bot/wireguard; \
+    mkdir -p /root/.ssh
 
 WORKDIR /usr/src/KBKM-Bot
 
 COPY package*.json ./
-COPY kbkm* /root/.ssh/
-COPY config /etc/ssh/ssh_config
+COPY ssh_config /etc/ssh/ssh_config
 
 RUN npm install
 
