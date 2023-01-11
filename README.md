@@ -18,7 +18,7 @@ https://user-images.githubusercontent.com/39748835/211038844-be6491f8-4ea9-425c-
 When you commit your code to Github, a Github workflow gets activated. The workflow builds a docker image out of your code, scans this image with snyk and finally pushes the image to docker hub. After that, you can start your container with the following command: (Fill in your credential at the respective "<>" position) 
 
 ```
-docker run --name kbkm-bot -e botToken=<> -e guildId=<> -e hetznerToken=<> -e duckdnsToken=<> -d tobdocker/kbkm-bot:<version>
+docker run --name kbkm-bot -e botToken=<> -e guildId=<> -e hetznerToken=<> -e duckdnsToken=<> -e duckdnsDomainVPN=<> -e duckdnsDomainMINECRAFT=<> -d tobdocker/kbkm-bot:<version>
 ```
 
 ### Useful links:
