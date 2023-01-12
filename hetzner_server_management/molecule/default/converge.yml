@@ -11,7 +11,8 @@
     #  register: res_cp_command_ssh_config
     #  changed_when: false
     - name: copy duck.sh to container
-      shell: docker cp
+      shell:  # noqa 305
+        docker cp
         /home/tobi/KBKM-Bot/hetzner_server_management/molecule/default/duck.sh
         molecule-test-bot:/home
       changed_when: false
@@ -226,7 +227,7 @@
     - name:
         Update ip address for duckdns {{ vpn_server_domain }}.duckdns.org
         -> {{ server_info_after_creation.hcloud_server_info[0].ipv4_address }}
-      shell:
+      shell:  # noqa 305
         "/home/duck.sh
         {{ vpn_server_domain }}
         {{ server_info_after_creation.hcloud_server_info[0].ipv4_address }}"
@@ -238,7 +239,7 @@
     - name:
         Update ip address for duckdns {{ minecraft_server_domain }}.duckdns.org
         -> {{ server_info_after_creation.hcloud_server_info[0].ipv4_address }}
-      shell:
+      shell:  # noqa 305
         "/home/duck.sh
         {{ minecraft_server_domain }}
         {{ server_info_after_creation.hcloud_server_info[0].ipv4_address }}"

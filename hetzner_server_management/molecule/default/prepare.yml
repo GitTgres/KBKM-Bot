@@ -11,7 +11,8 @@
       ansible.builtin.apt:
         name: pip
     - name: Install hcloud
-      shell: /usr/bin/python3 -m pip install hcloud
+      shell: /usr/bin/python3 -m pip install hcloud  # noqa 305
+      changed_when: false
     - name: Install openssh-server
       ansible.builtin.apt:
         name: openssh-server
