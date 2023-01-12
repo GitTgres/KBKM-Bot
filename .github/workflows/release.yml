@@ -1,9 +1,10 @@
 name: Release
 'on':
-  push:
+  workflow_run:
+    workflows: ["CI"]
     branches: [master]
-    paths-ignore:
-      - '**/README.md'
+    types:
+      - completed
 
 jobs:
 
