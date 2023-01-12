@@ -1,7 +1,7 @@
 ---
 - name: Install docker dependencies
   apt:
-    name: "{{item}}"
+    name: "{{ item }}"
     state: present
     update_cache: yes
   loop:
@@ -23,8 +23,8 @@
 
 - name: Install docker
   apt:
-    name: "{{item}}"
-    state: latest
+    name: "{{ item }}"
+    state: present
     update_cache: yes
   loop:
     - docker-ce
@@ -45,4 +45,5 @@
     mode: '0440'
 
 - name: Start minecraft server
-  shell: "/usr/bin/docker-compose up -d"
+  shell: "/usr/bin/docker-compose up -d"  # noqa 305
+  changed_when: false

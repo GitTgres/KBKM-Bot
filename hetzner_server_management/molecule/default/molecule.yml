@@ -1,0 +1,21 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: docker
+lint: |
+  set -e
+  yamllint .
+  ansible-lint
+platforms:
+  - name: molecule-test-bot
+    image: python:3-bullseye
+    pre_build_image: true
+provisioner:
+  name: ansible
+  options:
+    extra-vars: "type=vpn location=ash"
+  playbooks:
+    cleanup: cleanup.yml
+verifier:
+  name: ansible

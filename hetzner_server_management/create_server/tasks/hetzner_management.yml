@@ -207,7 +207,7 @@
 # the script duck.sh updates the "current ip" entry in your duckdns.org account
 - name: Update ip address for duckdns {{ vpn_server_domain }}.duckdns.org
     -> {{ server_info_after_creation.hcloud_server_info[0].ipv4_address }}
-  shell:
+  shell:  # noqa 305
     "/usr/src/KBKM-Bot/hetzner_server_management/create_server/scripts/duck.sh
     {{ vpn_server_domain }}
     {{ server_info_after_creation.hcloud_server_info[0].ipv4_address }}"
@@ -216,7 +216,7 @@
 # the script duck.sh updates the "current ip" entry in your duckdns.org account
 - name: Update ip address for duckdns {{ minecraft_server_domain }}.duckdns.org
     -> {{ server_info_after_creation.hcloud_server_info[0].ipv4_address }}
-  shell:
+  shell:  # noqa 305
     "/usr/src/KBKM-Bot/hetzner_server_management/create_server/scripts/duck.sh
     {{ minecraft_server_domain }}
     {{ server_info_after_creation.hcloud_server_info[0].ipv4_address }}"

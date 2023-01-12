@@ -1,0 +1,35 @@
+---
+- name: Cleanup
+  hosts: molecule-test-bot
+  gather_facts: no
+  tasks:
+    - name: Block
+      block:
+        - name: Wait for containers to be up
+          wait_for_connection:
+            delay: 1
+            timeout: 2
+          register: connection
+          ignore_errors: yes
+
+        - name: Containers are not up, quit from here
+          fail:
+          when: connection['failed']
+
+        - name: Delete vpn server
+          hetzner.hcloud.hcloud_server:
+            name: "{{ type }}"
+            api_token: "{{ lookup('ansible.builtin.env', 'hetznerToken') }}"
+            state: absent
+          when: type == "vpn"
+
+        - name: Delete minecraft server
+          hetzner.hcloud.hcloud_server:
+            name: "{{ type }}"
+            api_token: "{{ lookup('ansible.builtin.env', 'hetznerToken') }}"
+            state: absent
+          when: type == "minecraft"
+
+      rescue:
+        - name: It's ok we're at startup
+          meta: noop

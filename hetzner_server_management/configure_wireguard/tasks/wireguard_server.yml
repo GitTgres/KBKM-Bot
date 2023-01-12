@@ -9,7 +9,7 @@
   package:
     name:
       - wireguard
-    state: latest
+    state: present
 
 - name: Gather instance facts
   ansible.builtin.setup:

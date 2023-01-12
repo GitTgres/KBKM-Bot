@@ -1,0 +1,22 @@
+---
+- name: Prepare
+  hosts: molecule-test-bot
+  # become: yes
+  gather_facts: no
+  tasks:
+    - name: Install wireguard
+      ansible.builtin.apt:
+        name: wireguard
+    - name: Install pip
+      ansible.builtin.apt:
+        name: pip
+    - name: Install hcloud
+      shell: /usr/bin/python3 -m pip install hcloud
+    - name: Install openssh-server
+      ansible.builtin.apt:
+        name: openssh-server
+    - name: Create .ssh directory
+      ansible.builtin.file:
+        path: /root/.ssh
+        state: directory
+        mode: '0755'
