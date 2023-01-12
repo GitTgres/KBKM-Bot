@@ -1,21 +1,18 @@
 ---
 - hosts: hetzner_vpn
-  #become: yes
-  vars_files:    
+  vars_files:
     - vars/vars.yml
 
   tasks:
     - import_tasks: tasks/wireguard_server.yml
 
 - hosts: localhost
-  #become: yes
-  vars_files:    
+  vars_files:
     - vars/vars.yml
   tasks:
     - import_tasks: tasks/wireguard_client.yml
 
 - hosts: hetzner_vpn
-  #become: yes
   vars_files:
     - vars/vars.yml
 

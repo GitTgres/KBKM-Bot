@@ -1,11 +1,15 @@
 ---
 - name: Parameters taken from Discord input
   set_fact:
-    server_name: "{{ type }}" #Attention: In Discord you can specify the Server type (vpn or minecraft) which will be the name in the hetzner cloud console 
-    server_location: "{{ location }}" #fsn1, nbg1, hel1, ash, hil
+    # Attention: In Discord you can specify the Server type (vpn or minecraft)
+    # which will be the name in the hetzner cloud console
+    server_name: "{{ type }}"
+    server_location: "{{ location }}"  # fsn1, nbg1, hel1, ash, hil
     hetzner_token: "{{ lookup('ansible.builtin.env', 'hetznerToken') }}"
-    vpn_server_domain: "{{ lookup('ansible.builtin.env', 'duckdnsDomainVPN') }}"
-    minecraft_server_domain: "{{ lookup('ansible.builtin.env', 'duckdnsDomainMINECRAFT') }}"
+    vpn_server_domain:
+      "{{ lookup('ansible.builtin.env', 'duckdnsDomainVPN') }}"
+    minecraft_server_domain:
+      "{{ lookup('ansible.builtin.env', 'duckdnsDomainMINECRAFT') }}"
 
 - name: Generate ssh_config file
   ansible.builtin.template:
@@ -18,7 +22,7 @@
 
 - name: Gather server info before potential server creation
   hcloud_server_info:
-    name: "{{ server_name }}" #vpn or minecraft
+    name: "{{ server_name }}"  # vpn or minecraft
     api_token: "{{ hetzner_token }}"
   register: server_info
 
@@ -28,21 +32,27 @@
 
 - name: Vpn with location not in the US
   set_fact:
-    server_type: cx11 #cpx11, cpx21, cx11, cpx41 ... not the type which you type in, in Discord!
+    server_type: cx11  # cpx11, cpx21, cx11, cpx41
     server_firewall: VpnFirewall
     server_ssh_key: vpn_ssh_key
-  when: (server_name == "vpn") and (server_location != "ash") or (server_location != "hil")
+  when: (server_name == "vpn")
+    and (server_location != "ash")
+    or (server_location != "hil")
 
-- name: Vpn server with location in the US #you have to choose cpx11 here, because hetzner doesn't offer the cx11 in the US
+# you have to choose cpx11 here,
+# because hetzner doesn't offer the cx11 in the US
+- name: Vpn server with location in the US
   set_fact:
-    server_type: cpx11 #cpx11, cpx21, cx11, cpx41 ... not the type which you type in, in Discord!
+    server_type: cpx11  # cpx11, cpx21, cx11, cpx41
     server_firewall: VpnFirewall
     server_ssh_key: vpn_ssh_key
-  when: (server_name == "vpn") and (server_location == "ash") or (server_location == "hil")
+  when: (server_name == "vpn")
+    and (server_location == "ash")
+    or (server_location == "hil")
 
 - name: Minecraft server
   set_fact:
-    server_type: cpx21 #cpx11, cpx21, cx11, cpx41 ... not the type which you type in, in Discord!
+    server_type: cpx21  # cpx11, cpx21, cx11, cpx41
     server_firewall: MinecraftFirewall
     server_ssh_key: minecraft_ssh_key
   when: server_name == "minecraft"
@@ -50,11 +60,11 @@
 - name: Print server configuration
   debug:
     msg:
-    - "Server type: {{ server_name }}"
-    - "Server location: {{ server_location }}"
-    - "Server hardware: {{ server_type }}"
-    - "Server firewall: {{ server_firewall }}"
-    - "Server ssh-key: {{ server_ssh_key }}"
+      - "Server type: {{ server_name }}"
+      - "Server location: {{ server_location }}"
+      - "Server hardware: {{ server_type }}"
+      - "Server firewall: {{ server_firewall }}"
+      - "Server ssh-key: {{ server_ssh_key }}"
 
 - name: Create firewall and ssh key for vpn server
   block:
@@ -107,7 +117,7 @@
         api_token: "{{ hetzner_token }}"
         public_key: "{{ public_vpn_ssh_key.stdout }}"
         state: present
-  when: server_name == "vpn"  
+  when: server_name == "vpn"
 
 - name: Create firewall and ssh key for minecraft server
   block:
@@ -164,27 +174,29 @@
 
 - name: Delete already existing server when the location differs
   hetzner.hcloud.hcloud_server:
-    name: "{{ server_name }}" #vpn or minecraft
+    name: "{{ server_name }}"  # vpn or minecraft
     api_token: "{{ hetzner_token }}"
     state: absent
-  when: (server_info.hcloud_server_info[0].name is not undefined) and (server_name == server_info.hcloud_server_info[0].name) and (server_location != server_info.hcloud_server_info[0].location)
+  when: (server_info.hcloud_server_info[0].name is not undefined)
+    and (server_name == server_info.hcloud_server_info[0].name)
+    and (server_location != server_info.hcloud_server_info[0].location)
 
 - name: Create server based on configuration
   hetzner.hcloud.hcloud_server:
-    name: "{{ server_name }}" #vpn or minecraft
+    name: "{{ server_name }}"  # vpn or minecraft
     api_token: "{{ hetzner_token }}"
-    server_type: "{{ server_type }}" #cpx11, cpx21, cx11, cpx41 ... not the type which you choose in Discord!
+    server_type: "{{ server_type }}"  # cpx11, cpx21, cx11, cpx41
     image: ubuntu-22.04
     firewalls: "{{ server_firewall }}"
-    location: "{{ server_location }}" #fsn1, nbg1, hel1, ash, hil
+    location: "{{ server_location }}"  # fsn1, nbg1, hel1, ash, hil
     force: true
     ssh_keys:
       - "{{ server_ssh_key }}"
     state: present
 
-- name: Gather server info after server creation 
+- name: Gather server info after server creation
   hcloud_server_info:
-    name: "{{ server_name }}" #vpn or minecraft
+    name: "{{ server_name }}"  # vpn or minecraft
     api_token: "{{ hetzner_token }}"
   register: server_info_after_creation
 
@@ -192,15 +204,27 @@
   debug:
     var: server_info_after_creation
 
-- name: Update ip address for duckdns {{ vpn_server_domain }}.duckdns.org -> {{ server_info_after_creation.hcloud_server_info[0].ipv4_address }} #the script duck.sh updates the "current ip" entry in your duckdns.org account
-  shell: "/usr/src/KBKM-Bot/hetzner_server_management/create_server/scripts/duck.sh {{ vpn_server_domain }} {{ server_info_after_creation.hcloud_server_info[0].ipv4_address }}"
+# the script duck.sh updates the "current ip" entry in your duckdns.org account
+- name: Update ip address for duckdns {{ vpn_server_domain }}.duckdns.org
+    -> {{ server_info_after_creation.hcloud_server_info[0].ipv4_address }}
+  shell:
+    "/usr/src/KBKM-Bot/hetzner_server_management/create_server/scripts/duck.sh
+    {{ vpn_server_domain }}
+    {{ server_info_after_creation.hcloud_server_info[0].ipv4_address }}"
   when: server_name == "vpn"
 
-- name: Update ip address for duckdns {{ minecraft_server_domain }}.duckdns.org -> {{ server_info_after_creation.hcloud_server_info[0].ipv4_address }} #the script duck.sh updates the "current ip" entry in your duckdns.org account
-  shell: "/usr/src/KBKM-Bot/hetzner_server_management/create_server/scripts/duck.sh {{ minecraft_server_domain }} {{ server_info_after_creation.hcloud_server_info[0].ipv4_address }}"
+# the script duck.sh updates the "current ip" entry in your duckdns.org account
+- name: Update ip address for duckdns {{ minecraft_server_domain }}.duckdns.org
+    -> {{ server_info_after_creation.hcloud_server_info[0].ipv4_address }}
+  shell:
+    "/usr/src/KBKM-Bot/hetzner_server_management/create_server/scripts/duck.sh
+    {{ minecraft_server_domain }}
+    {{ server_info_after_creation.hcloud_server_info[0].ipv4_address }}"
   when: server_name == "minecraft"
 
-- name: Check every 3 second if ssh is available (maximal 300 seconds) #cf. https://docs.ansible.com/ansible/latest/collections/ansible/builtin/wait_for_module.html#parameter-timeout 
+# For more info look at
+# https://docs.ansible.com/ansible/latest/collections/ansible/builtin/wait_for_module.html#parameter-timeout
+- name: Check every 3 second if ssh is available (maximal 300 seconds)
   wait_for:
     port: 22
     host: '{{ server_info_after_creation.hcloud_server_info[0].ipv4_address }}'

@@ -1,14 +1,12 @@
 ---
 - hosts: localhost
-  #become: yes
-  vars_files:    
+  vars_files:
     - vars/vars.yml
   tasks:
     - import_tasks: tasks/hetzner_management.yml
 
 - hosts: hetzner_{{ type }}
-  #become: yes
-  vars_files:    
+  vars_files:
     - vars/vars.yml
   tasks:
     - import_tasks: tasks/initial_config.yml

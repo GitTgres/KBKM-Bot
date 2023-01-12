@@ -9,7 +9,7 @@
     - name: Generate wireguard private key
       ansible.builtin.command: "wg genkey"
       register: wireguard__register_private_key
-      changed_when: false     
+      changed_when: false
 
     - name: Set private key fact
       ansible.builtin.set_fact:
@@ -27,8 +27,10 @@
 
     - name: Set private key fact
       ansible.builtin.set_fact:
-        wireguard_private_key: "{{ wireguard__register_config['content'] | b64decode | regex_findall('PrivateKey = (.*)') | first }}"
-      
+        wireguard_private_key:
+          "{{ wireguard__register_config['content'] | b64decode
+          | regex_findall('PrivateKey = (.*)') | first }}"
+
   when:
     - wireguard__register_config_file.stat.exists
     - wireguard_private_key is not defined
@@ -47,7 +49,7 @@
 
 - name: Show public key (client)
   ansible.builtin.debug:
-    var: wireguard__register_public_key.stdout 
+    var: wireguard__register_public_key.stdout
 
 - name: Generate wireguard configuration file (client)
   ansible.builtin.template:

@@ -8,7 +8,7 @@
 - name: Install wireguard package
   package:
     name:
-      - wireguard 
+      - wireguard
     state: latest
 
 - name: Gather instance facts
@@ -39,18 +39,19 @@
 
     - name: Check if wg syncconf subcommand is available
       ansible.builtin.set_fact:
-        wg_syncconf: "{{ 'syncconf:' in wireguard__register_subcommands.stdout }}"
+        wg_syncconf:
+          "{{ 'syncconf:' in wireguard__register_subcommands.stdout }}"
 
     - name: Show syncconf subcommand status
       ansible.builtin.debug:
-        var: wg_syncconf  
+        var: wg_syncconf
 
 - name: Wireguard private key handling for new keys
   block:
     - name: Generate wireguard private key
       ansible.builtin.command: "wg genkey"
       register: wireguard__register_private_key
-      changed_when: false     
+      changed_when: false
 
     - name: Set private key fact
       ansible.builtin.set_fact:
@@ -68,8 +69,10 @@
 
     - name: Set private key fact
       ansible.builtin.set_fact:
-        wireguard_private_key: "{{ wireguard__register_config['content'] | b64decode | regex_findall('PrivateKey = (.*)') | first }}"
-      
+        wireguard_private_key:
+          "{{ wireguard__register_config['content'] | b64decode
+           | regex_findall('PrivateKey = (.*)') | first }}"
+
     - name: Stop wireguard
       ansible.builtin.service:
         name: wg-quick@wg
@@ -92,7 +95,7 @@
 
 - name: Show public key (server)
   ansible.builtin.debug:
-    var: wireguard__register_public_key.stdout 
+    var: wireguard__register_public_key.stdout
 
 - name: Create wireguard configuration directory
   ansible.builtin.file:

@@ -1,5 +1,4 @@
 ---
-  
 - name: Install docker dependencies
   apt:
     name: "{{item}}"
@@ -40,10 +39,10 @@
 
 - name: Download docker compose file for minecraft server
   ansible.builtin.get_url:
-    url: https://raw.githubusercontent.com/GitTgres/Minecraftserver/main/docker-compose.yml
+    url:
+      https://raw.githubusercontent.com/GitTgres/Minecraftserver/main/docker-compose.yml
     dest: /root/docker-compose.yml
     mode: '0440'
 
 - name: Start minecraft server
   shell: "/usr/bin/docker-compose up -d"
-
