@@ -43,8 +43,7 @@ jobs:
         with:
           python-version: '3.x'
           cache: 'pip'
-
-      - run: pip install hcloud
+      - run: pip install -r requirements.txt
 
       - name: Install test dependencies
         run: pip3 install ansible molecule[docker] docker yamllint ansible-lint
