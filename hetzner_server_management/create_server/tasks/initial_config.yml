@@ -1,10 +1,10 @@
 ---
 - name: Update packages
-  apt:
+  ansible.builtin.apt:
     update_cache: yes
     upgrade: "yes"
 
 - name: Install essential packages
-  package:
+  ansible.builtin.package:
     name: "{{ packages }}"
     state: present

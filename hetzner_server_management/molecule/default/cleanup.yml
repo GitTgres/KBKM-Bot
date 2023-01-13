@@ -6,14 +6,14 @@
     - name: Block
       block:
         - name: Wait for containers to be up
-          wait_for_connection:
+          ansible.builtin.wait_for_connection:
             delay: 1
             timeout: 2
           register: connection
           ignore_errors: yes
 
         - name: Containers are not up, quit from here
-          fail:
+          ansible.builtin.fail:
           when: connection['failed']
 
         - name: Delete vpn server
@@ -32,4 +32,4 @@
 
       rescue:
         - name: It's ok we're at startup
-          meta: noop
+          ansible.builtin.meta: noop

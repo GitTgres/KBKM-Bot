@@ -1,6 +1,6 @@
 ---
 - name: Copy public key
-  lineinfile:
+  ansible.builtin.lineinfile:
     dest: /etc/wireguard/wg.conf
     regexp: "^#PublicKey = Test"
     line: "PublicKey = {{ hostvars['localhost'].wireguard__fact_public_key }}"

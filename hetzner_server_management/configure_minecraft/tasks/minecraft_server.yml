@@ -1,6 +1,6 @@
 ---
 - name: Install docker dependencies
-  apt:
+  ansible.builtin.apt:
     name: "{{ item }}"
     state: present
     update_cache: yes
@@ -12,17 +12,17 @@
     - software-properties-common
 
 - name: Add docker gpg key
-  apt_key:
+  ansible.builtin.apt_key:
     url: https://download.docker.com/linux/ubuntu/gpg
     state: present
 
 - name: Add docker repo
-  apt_repository:
+  ansible.builtin.apt_repository:
     repo: deb https://download.docker.com/linux/ubuntu jammy stable
     state: present
 
 - name: Install docker
-  apt:
+  ansible.builtin.apt:
     name: "{{ item }}"
     state: present
     update_cache: yes
@@ -32,7 +32,7 @@
     - docker-compose
 
 - name: Start docker
-  service:
+  ansible.builtin.service:
     name: docker
     state: started
     enabled: yes
@@ -45,5 +45,5 @@
     mode: '0440'
 
 - name: Start minecraft server
-  shell: "/usr/bin/docker-compose up -d"  # noqa 305
+  ansible.builtin.shell: "/usr/bin/docker-compose up -d"  # noqa 305
   changed_when: false

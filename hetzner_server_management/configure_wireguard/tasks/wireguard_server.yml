@@ -6,7 +6,7 @@
     state: absent
 
 - name: Install wireguard package
-  package:
+  ansible.builtin.package:
     name:
       - wireguard
     state: present
@@ -47,6 +47,9 @@
         var: wg_syncconf
 
 - name: Wireguard private key handling for new keys
+  when:
+    - not wireguard__register_config_file.stat.exists
+    - wireguard_private_key is not defined
   block:
     - name: Generate wireguard private key
       ansible.builtin.command: "wg genkey"
@@ -56,11 +59,11 @@
     - name: Set private key fact
       ansible.builtin.set_fact:
         wireguard_private_key: "{{ wireguard__register_private_key.stdout }}"
-  when:
-    - not wireguard__register_config_file.stat.exists
-    - wireguard_private_key is not defined
 
 - name: Wireguard private key handling for existing keys
+  when:
+    - wireguard__register_config_file.stat.exists
+    - wireguard_private_key is not defined
   block:
     - name: Read wireguard config file
       ansible.builtin.slurp:
@@ -77,9 +80,6 @@
       ansible.builtin.service:
         name: wg-quick@wg
         state: stopped
-  when:
-    - wireguard__register_config_file.stat.exists
-    - wireguard_private_key is not defined
 
 - name: Derive wireguard public key
   ansible.builtin.command: "wg pubkey"
@@ -118,7 +118,7 @@
     state: absent
 
 - name: Enable and persist ip forwarding
-  sysctl:
+  ansible.posix.sysctl:
     name: net.ipv4.ip_forward
     value: "1"
     state: present
