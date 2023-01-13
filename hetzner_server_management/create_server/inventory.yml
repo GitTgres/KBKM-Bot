@@ -4,14 +4,14 @@ hetzner:
     hetzner_vpn:
       ansible_host:
         "{{ lookup('ansible.builtin.env',
-        'duckdnsDomainVPN') }}.duckdns.org"
+        'duckdns_domain_vpn') }}.duckdns.org"
       ansible_user: root
       ansible_connection: ssh
       ansible_ssh_private_key_file: /root/.ssh/vpn_ssh_key
     hetzner_minecraft:
       ansible_host:
         "{{ lookup('ansible.builtin.env',
-        'duckdnsDomainMINECRAFT') }}.duckdns.org"
+        'duckdns_domain_minecraft') }}.duckdns.org"
       ansible_user: root
       ansible_connection: ssh
       ansible_ssh_private_key_file: /root/.ssh/minecraft_ssh_key

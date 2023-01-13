@@ -5,11 +5,12 @@
     # which will be the name in the hetzner cloud console
     server_name: "{{ type }}"
     server_location: "{{ location }}"  # fsn1, nbg1, hel1, ash, hil
-    hetzner_token: "{{ lookup('ansible.builtin.env', 'hetznerToken') }}"
+    hetzner_token: "{{ lookup('ansible.builtin.env', 'hetzner_token') }}"
+    duckdns_token: "{{ lookup('ansible.builtin.env', 'duckdns_token') }}"
     vpn_server_domain:
-      "{{ lookup('ansible.builtin.env', 'duckdnsDomainVPN') }}"
+      "{{ lookup('ansible.builtin.env', 'duckdns_domain_vpn') }}"
     minecraft_server_domain:
-      "{{ lookup('ansible.builtin.env', 'duckdnsDomainMINECRAFT') }}"
+      "{{ lookup('ansible.builtin.env', 'duckdns_domain_minecraft') }}"
 
 - name: Generate ssh_config file
   ansible.builtin.template:
@@ -33,7 +34,7 @@
 - name: Vpn with location not in the US
   ansible.builtin.set_fact:
     server_type: cx11  # cpx11, cpx21, cx11, cpx41
-    server_firewall: VpnFirewall
+    server_firewall: vpn_firewall
     server_ssh_key: vpn_ssh_key
   when: (server_name == "vpn")
     and (server_location != "ash")
@@ -44,7 +45,7 @@
 - name: Vpn server with location in the US
   ansible.builtin.set_fact:
     server_type: cpx11  # cpx11, cpx21, cx11, cpx41
-    server_firewall: VpnFirewall
+    server_firewall: vpn_firewall
     server_ssh_key: vpn_ssh_key
   when: (server_name == "vpn")
     and (server_location == "ash")
@@ -53,7 +54,7 @@
 - name: Minecraft server
   ansible.builtin.set_fact:
     server_type: cpx21  # cpx11, cpx21, cx11, cpx41
-    server_firewall: MinecraftFirewall
+    server_firewall: minecraft_firewall
     server_ssh_key: minecraft_ssh_key
   when: server_name == "minecraft"
 
@@ -71,7 +72,7 @@
   block:
     - name: Create a firewall for vpn server
       hetzner.hcloud.hcloud_firewall:
-        name: VpnFirewall
+        name: vpn_firewall
         api_token: "{{ hetzner_token }}"
         rules:
           - direction: in
@@ -125,7 +126,7 @@
   block:
     - name: Create a firewall for minecraft server
       hetzner.hcloud.hcloud_firewall:
-        name: MinecraftFirewall
+        name: minecraft_firewall
         api_token: "{{ hetzner_token }}"
         rules:
           - direction: in
@@ -212,6 +213,7 @@
   ansible.builtin.shell:  # noqa 305
     "/usr/src/KBKM-Bot/hetzner_server_management/create_server/scripts/duck.sh
     {{ vpn_server_domain }}
+    {{ duckdns_token }}
     {{ server_info_after_creation.hcloud_server_info[0].ipv4_address }}"
   when: server_name == "vpn"
 
@@ -221,6 +223,7 @@
   ansible.builtin.shell:  # noqa 305
     "/usr/src/KBKM-Bot/hetzner_server_management/create_server/scripts/duck.sh
     {{ minecraft_server_domain }}
+    {{ duckdns_token }}
     {{ server_info_after_creation.hcloud_server_info[0].ipv4_address }}"
   when: server_name == "minecraft"
 

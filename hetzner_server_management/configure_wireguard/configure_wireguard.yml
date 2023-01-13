@@ -1,20 +1,24 @@
 ---
-- hosts: hetzner_vpn
-  vars_files:
-    - vars/vars.yml
-
-  tasks:
-    - import_tasks: tasks/wireguard_server.yml
-
-- hosts: localhost
+- name: Configure wireguard server
+  hosts: hetzner_vpn
   vars_files:
     - vars/vars.yml
   tasks:
-    - import_tasks: tasks/wireguard_client.yml
+    - name: Import tasks to configure the wireguard server
+      ansible.builtin.import_tasks: tasks/wireguard_server.yml
 
-- hosts: hetzner_vpn
+- name: Configure wireguard client
+  hosts: localhost
   vars_files:
     - vars/vars.yml
-
   tasks:
-    - import_tasks: tasks/copy_public_key.yml
+    - name: Import tasks to configure the wireguard client
+      ansible.builtin.import_tasks: tasks/wireguard_client.yml
+
+- name: Copy public keys
+  hosts: hetzner_vpn
+  vars_files:
+    - vars/vars.yml
+  tasks:
+    - name: Import copy public key tasks
+      ansible.builtin.import_tasks: tasks/copy_public_key.yml

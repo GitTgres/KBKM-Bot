@@ -1,15 +1,19 @@
 ---
-- hosts: localhost
+- name: Create server on https://www.hetzner.com/cloud
+  hosts: localhost
   vars_files:
     - vars/vars.yml
   tasks:
-    - import_tasks: tasks/hetzner_management.yml
+    - name: Import tasks for server creation
+      ansible.builtin.import_tasks: tasks/hetzner_management.yml
 
-- hosts: hetzner_{{ type }}
+- name: Initial config
+  hosts: hetzner_{{ type }}
   vars_files:
     - vars/vars.yml
   tasks:
-    - import_tasks: tasks/initial_config.yml
+    - name: Import tasks for initial config
+      ansible.builtin.import_tasks: tasks/initial_config.yml
 
 - name: Configure wireguard
   import_playbook: ../configure_wireguard/configure_wireguard.yml

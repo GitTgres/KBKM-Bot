@@ -50,6 +50,9 @@ jobs:
         working-directory: ./hetzner_server_management
         run: molecule test
         env:
-          hetznerToken: ${{ secrets.HETZNER_TOKEN }}
+          hetzner_token: ${{ secrets.HETZNER_TOKEN }}
+          duckdns_token: ${{ secrets.DUCKDNS_TOKEN }}
+          duckdns_domain_vpn: ${{ secrets.DUCKDNS_DOMAIN_VPN }}
+          duckdns_domain_minecraft: ${{ secrets.DUCKDNS_DOMAIN_MINECRAFT }}
           PY_COLORS: '1'
           ANSIBLE_FORCE_COLOR: '1'

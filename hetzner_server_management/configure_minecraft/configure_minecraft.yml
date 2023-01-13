@@ -1,8 +1,10 @@
 ---
-- hosts: hetzner_minecraft
+- name: Configure minecraft server
+  hosts: hetzner_minecraft
   become: yes
   vars_files:
     - vars/vars.yml
 
   tasks:
-    - import_tasks: tasks/minecraft_server.yml
+    - name: Import tasks to configure the minecraft server
+      ansible.builtin.import_tasks: tasks/minecraft_server.yml

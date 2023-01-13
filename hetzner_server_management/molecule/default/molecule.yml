@@ -15,6 +15,7 @@ provisioner:
   name: ansible
   options:
     extra-vars: "type=vpn location=ash"
+    inventory_file: create_server/inventory.yml
   playbooks:
     cleanup: cleanup.yml
 verifier:
