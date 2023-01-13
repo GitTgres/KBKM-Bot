@@ -14,8 +14,7 @@
     - name: Copy duck.sh to container
       ansible.builtin.shell:  # noqa 305
         docker cp
-        ${{
-        github.workspace }}/hetzner_server_management/molecule/default/duck.sh
+        ${GITHUB_WORKSPACE}/hetzner_server_management/molecule/default/duck.sh
         molecule-test-bot:/home
       changed_when: false
 
