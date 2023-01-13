@@ -20,8 +20,8 @@ jobs:
         with:
           python-version: '3.x'
 
-      - name: Install test dependencies
-        run: pip3 install ansible molecule[docker] docker yamllint ansible-lint
+      - name: Install lint dependencies
+        run: pip3 install ansible molecule[docker] yamllint ansible-lint
 
       - name: Run Molecule lint
         working-directory: ./hetzner_server_management
@@ -44,7 +44,7 @@ jobs:
           python-version: '3.x'
 
       - name: Install test dependencies
-        run: pip3 install ansible molecule[docker] docker
+        run: pip3 install ansible molecule[docker] docker yamllint ansible-lint
 
       - name: Run Molecule tests
         working-directory: ./hetzner_server_management
