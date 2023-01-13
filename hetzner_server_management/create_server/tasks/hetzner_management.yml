@@ -20,6 +20,7 @@
     group: root
     mode: 0600
     force: yes
+  become: true
 
 - name: Gather server info before potential server creation
   hetzner.hcloud.hcloud_server_info:
