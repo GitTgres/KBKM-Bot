@@ -187,11 +187,11 @@ export default new Command({
                         })
                     })   
                 }
-                else if (serverType === 'minecraft') 
+                else if (serverType === 'minecraft')
                 {
                     res.on("close", code => {
-                        console.log("Minecraft server fertig.");
-                        interaction.followUp("Minecraft server fertig.");
+                        console.log(`Minecraft server fertig. Erreichbar unter: ${process.env.duckdnsDomainMINECRAFT}.duckdns.org:25565`);
+                        interaction.followUp(`Minecraft server fertig. Erreichbar unter: ${process.env.duckdnsDomainMINECRAFT}.duckdns.org:25565`);
                     })
                 }
                         //res.stderr.on('data', (data) => {
