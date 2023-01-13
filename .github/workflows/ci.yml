@@ -48,7 +48,8 @@ jobs:
 
       - name: Run Molecule tests
         working-directory: ./hetzner_server_management
-        run: hetznerToken=${{ secrets.HETZNER_TOKEN }} molecule test
+        run: molecule test
         env:
+          hetznerToken: ${{ secrets.HETZNER_TOKEN }}
           PY_COLORS: '1'
           ANSIBLE_FORCE_COLOR: '1'
