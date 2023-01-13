@@ -1,6 +1,6 @@
 ---
 - name: Prepare
-  hosts: molecule-test-bot
+  hosts: localhost
   # become: yes
   gather_facts: no
   tasks:

@@ -1,6 +1,6 @@
 ---
 - name: Cleanup
-  hosts: molecule-test-bot
+  hosts: localhost
   gather_facts: no
   tasks:
     - name: Block
@@ -19,14 +19,14 @@
         - name: Delete vpn server
           hetzner.hcloud.hcloud_server:
             name: "{{ type }}"
-            api_token: "{{ lookup('ansible.builtin.env', 'hetznerToken') }}"
+            api_token: "{{ lookup('ansible.builtin.env', 'hetzner_token') }}"
             state: absent
           when: type == "vpn"
 
         - name: Delete minecraft server
           hetzner.hcloud.hcloud_server:
             name: "{{ type }}"
-            api_token: "{{ lookup('ansible.builtin.env', 'hetznerToken') }}"
+            api_token: "{{ lookup('ansible.builtin.env', 'hetzner_token') }}"
             state: absent
           when: type == "minecraft"
 
