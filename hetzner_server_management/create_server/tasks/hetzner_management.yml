@@ -19,7 +19,7 @@
     dest: /etc/ssh/ssh_config
     owner: root
     group: root
-    mode: 1777
+    mode: '0777'
     force: yes
 
 - name: Create {{ github_workspace }}/.ssh directory
