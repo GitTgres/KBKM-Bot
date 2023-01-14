@@ -19,14 +19,14 @@
     dest: /etc/ssh/ssh_config
     owner: root
     group: root
-    mode: 0600
+    mode: 1777
     force: yes
 
 - name: Create {{ github_workspace }}/.ssh directory
   ansible.builtin.file:
     path: "{{ github_workspace }}/.ssh"
     state: directory
-    mode: '0755'
+    mode: '1777'
 
 - name: Gather server info before potential server creation
   hetzner.hcloud.hcloud_server_info:
@@ -108,6 +108,8 @@
       community.crypto.openssh_keypair:
         path: "{{ github_workspace }}/.ssh/vpn_ssh_key"
         type: ed25519
+        owner: root
+        group: root
 
     - name: Read in vpn ssh key
       ansible.builtin.shell: |
@@ -162,6 +164,8 @@
       community.crypto.openssh_keypair:
         path: "{{ github_workspace }}/.ssh/minecraft_ssh_key"
         type: ed25519
+        owner: root
+        group: root
 
     - name: Read in minecraft ssh key
       ansible.builtin.shell: |
