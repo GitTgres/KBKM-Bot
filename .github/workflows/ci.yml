@@ -50,7 +50,7 @@ jobs:
 
       - name: Run Molecule tests
         working-directory: ./hetzner_server_management
-        run: molecule test
+        run: molecule -vvv test
         env:
           hetzner_token: ${{ secrets.HETZNER_TOKEN }}
           duckdns_token: ${{ secrets.DUCKDNS_TOKEN }}
