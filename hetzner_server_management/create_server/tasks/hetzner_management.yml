@@ -111,6 +111,9 @@
         owner: root
         group: root
 
+    - name: Debug permissions of ssh key file
+      ansible.builtin.shell: ls -la {{ github_workspace }}/.ssh/
+
     - name: Read in vpn ssh key
       ansible.builtin.shell: |
         cat {{ github_workspace }}/.ssh/vpn_ssh_key.pub
