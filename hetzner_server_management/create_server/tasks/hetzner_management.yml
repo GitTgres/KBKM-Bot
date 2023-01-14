@@ -111,7 +111,7 @@
 
     - name: Read in vpn ssh key
       ansible.builtin.shell: |
-        "cat {{ github_workspace }}/.ssh/vpn_ssh_key.pub"
+        cat {{ github_workspace }}/.ssh/vpn_ssh_key.pub
       register: public_vpn_ssh_key
       changed_when: false
 
@@ -165,7 +165,7 @@
 
     - name: Read in minecraft ssh key
       ansible.builtin.shell: |
-       "cat {{ github_workspace }}/.ssh/minecraft_ssh_key.pub"
+       cat {{ github_workspace }}/.ssh/minecraft_ssh_key.pub
       register: public_minecraft_ssh_key
       changed_when: false
 
