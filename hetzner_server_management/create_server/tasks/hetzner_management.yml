@@ -211,7 +211,9 @@
 - name: Update ip address for duckdns {{ vpn_server_domain }}.duckdns.org
     -> {{ server_info_after_creation.hcloud_server_info[0].ipv4_address }}
   ansible.builtin.shell:  # noqa 305
-    "{{ lookup('ansible.builtin.env', 'GITHUB_WORKSPACE') }}/hetzner_server_management/create_server/scripts/duck.sh
+    "{{ lookup('ansible.builtin.env',
+    'GITHUB_WORKSPACE')
+    }}/hetzner_server_management/create_server/scripts/duck.sh
     {{ vpn_server_domain }}
     {{ duckdns_token }}
     {{ server_info_after_creation.hcloud_server_info[0].ipv4_address }}"
@@ -221,7 +223,9 @@
 - name: Update ip address for duckdns {{ minecraft_server_domain }}.duckdns.org
     -> {{ server_info_after_creation.hcloud_server_info[0].ipv4_address }}
   ansible.builtin.shell:  # noqa 305
-    "{{ lookup('ansible.builtin.env', 'GITHUB_WORKSPACE') }}/hetzner_server_management/create_server/scripts/duck.sh
+    "{{ lookup('ansible.builtin.env',
+    'GITHUB_WORKSPACE')
+    }}/hetzner_server_management/create_server/scripts/duck.sh
     {{ minecraft_server_domain }}
     {{ duckdns_token }}
     {{ server_info_after_creation.hcloud_server_info[0].ipv4_address }}"
