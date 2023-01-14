@@ -1,7 +1,11 @@
 ---
+- name: Set GITHUB_WORKSPACE
+  ansible.builtin.set_fact:
+    github_workspace: "{{ lookup('ansible.builtin.env', 'GITHUB_WORKSPACE') }}"
+
 - name: Register if config/private key already exist on target host
   ansible.builtin.stat:
-    path: /usr/src/KBKM-Bot/wireguard/wg.conf
+    path: "{{ github_workspace }}/wireguard/wg.conf"
   register: wireguard__register_config_file
 
 - name: Wireguard private key handling for new keys
@@ -25,7 +29,7 @@
   block:
     - name: Read wireguard config file
       ansible.builtin.slurp:
-        src: /usr/src/KBKM-Bot/wireguard/wg.conf
+        src: "{{ github_workspace }}/wireguard/wg.conf"
       register: wireguard__register_config
 
     - name: Set private key fact
@@ -53,8 +57,8 @@
 - name: Generate wireguard configuration file (client)
   ansible.builtin.template:
     src: client_wg.conf.j2
-    dest: /usr/src/KBKM-Bot/wireguard/wg.conf
+    dest: "{{ github_workspace }}/wireguard/wg.conf"
     owner: root
     group: root
-    mode: 0600
+    mode: 0644
     force: true

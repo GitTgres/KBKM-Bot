@@ -28,6 +28,12 @@
     state: directory
     mode: '1777'
 
+- name: Create {{ github_workspace }}/wireguard directory
+  ansible.builtin.file:
+    path: "{{ github_workspace }}/wireguard"
+    state: directory
+    mode: '1777'
+
 - name: Gather server info before potential server creation
   hetzner.hcloud.hcloud_server_info:
     name: "{{ server_name }}"  # vpn or minecraft
