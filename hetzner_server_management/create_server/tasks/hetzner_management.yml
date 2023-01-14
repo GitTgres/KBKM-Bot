@@ -112,8 +112,19 @@
         group: root
 
     - name: Debug permissions of ssh key file
-      ansible.builtin.shell: |
-        ls -la {{ github_workspace }}/.ssh/ # noqa 305
+      ansible.builtin.shell: |  # noqa 305
+        ls -la {{ github_workspace }}/.ssh/
+      changed_when: false
+
+    - name: Change permissions of ssh key file
+      ansible.builtin.shell: |  # noqa 305
+        chmod 644 {{ github_workspace }}/.ssh/vpn_ssh_key
+      changed_when: false
+      become: true
+
+    - name: Debug permissions of ssh key file
+      ansible.builtin.shell: |  # noqa 305
+        ls -la {{ github_workspace }}/.ssh/
       changed_when: false
     - name: Read in vpn ssh key
       ansible.builtin.shell: |
