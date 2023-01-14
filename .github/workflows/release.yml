@@ -12,7 +12,7 @@ jobs:
     name: Release
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Setup up Docker Buildx
         uses: docker/setup-buildx-action@v1
       - name: Login to Docker Hub
@@ -41,6 +41,8 @@ jobs:
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.metadata.outputs.labels }}
+        env:
+          GITHUB_WORKSPACE: /usr/src/KBKM-Bot
 
       - name: Snyk Container Test
         continue-on-error: true
