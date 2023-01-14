@@ -10,6 +10,9 @@
     - name: Install openssh-server
       ansible.builtin.apt:
         name: openssh-server
+    - name: Install curl
+      ansible.builtin.apt:
+        name: curl
     - name: Create .ssh directory
       ansible.builtin.file:
         path: /root/.ssh

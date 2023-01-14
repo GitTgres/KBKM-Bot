@@ -1,6 +1,7 @@
 ---
 - name: Create server on https://www.hetzner.com/cloud
   hosts: localhost
+  become: true
   vars_files:
     - vars/vars.yml
   tasks:
