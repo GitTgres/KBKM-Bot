@@ -4,6 +4,7 @@
     dest: /etc/wireguard/wg.conf
     regexp: "^#PublicKey = Test"
     line: "PublicKey = {{ hostvars['localhost'].wireguard__fact_public_key }}"
+  changed_when: false
 
 - name: Start and enable wireguard service
   ansible.builtin.service:

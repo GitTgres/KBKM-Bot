@@ -117,10 +117,6 @@
         owner: root
         group: root
         regenerate: always
-
-    - name: Debug permissions of ssh key file
-      ansible.builtin.shell: |  # noqa 305
-        ls -la {{ github_workspace }}/.ssh/
       changed_when: false
 
     - name: Change permissions of ssh key file
@@ -128,11 +124,6 @@
         path: "{{ github_workspace }}/.ssh/vpn_ssh_key"
         mode: 0644
       become: true
-
-    - name: Debug permissions of ssh key file
-      ansible.builtin.shell: |  # noqa 305
-        ls -la {{ github_workspace }}/.ssh/
-      changed_when: false
 
     - name: Read in vpn ssh key
       ansible.builtin.shell: |
@@ -145,6 +136,7 @@
         name: vpn_ssh_key
         api_token: "{{ hetzner_token }}"
         state: absent
+      changed_when: false
 
     - name: Create a ssh key for vpn server
       hetzner.hcloud.hcloud_ssh_key:
@@ -152,6 +144,7 @@
         api_token: "{{ hetzner_token }}"
         public_key: "{{ public_vpn_ssh_key.stdout }}"
         state: present
+      changed_when: false
 
 - name: Create firewall and ssh key for minecraft server
   when: server_name == "minecraft"
@@ -189,6 +182,14 @@
         type: ed25519
         owner: root
         group: root
+        regenerate: always
+      changed_when: false
+
+    - name: Change permissions of ssh key file
+      ansible.builtin.file:
+        path: "{{ github_workspace }}/.ssh/minecraft_ssh_key"
+        mode: 0644
+      become: true
 
     - name: Read in minecraft ssh key
       ansible.builtin.shell: |
@@ -201,6 +202,7 @@
         name: minecraft_ssh_key
         api_token: "{{ hetzner_token }}"
         state: absent
+      changed_when: false
 
     - name: Create a ssh key for minecraft server
       hetzner.hcloud.hcloud_ssh_key:
@@ -208,6 +210,7 @@
         api_token: "{{ hetzner_token }}"
         public_key: "{{ public_minecraft_ssh_key.stdout }}"
         state: present
+      changed_when: false
 
 - name: Delete already existing server when the location differs
   hetzner.hcloud.hcloud_server:
@@ -252,6 +255,7 @@
     {{ server_info_after_creation.hcloud_server_info[0].ipv4_address }}
     {{ github_workspace }}"
   when: server_name == "vpn"
+  changed_when: false
 
 # the script duck.sh updates the "current ip" entry in your duckdns.org account
 - name: Update ip address for duckdns {{ minecraft_server_domain }}.duckdns.org
@@ -264,6 +268,7 @@
     {{ server_info_after_creation.hcloud_server_info[0].ipv4_address }}
     {{ github_workspace }}"
   when: server_name == "minecraft"
+  changed_when: false
 
 # For more info look at
 # https://docs.ansible.com/ansible/latest/collections/ansible/builtin/wait_for_module.html#parameter-timeout

@@ -111,6 +111,7 @@
     group: root
     mode: 0600
     force: yes
+  changed_when: false
 
 - name: Ensure legacy reload-module-on-update is absent
   ansible.builtin.file:
