@@ -216,7 +216,10 @@
     }}/hetzner_server_management/create_server/scripts/duck.sh
     {{ vpn_server_domain }}
     {{ duckdns_token }}
-    {{ server_info_after_creation.hcloud_server_info[0].ipv4_address }}"
+    {{ server_info_after_creation.hcloud_server_info[0].ipv4_address }}
+    {{ lookup('ansible.builtin.env',
+    'GITHUB_WORKSPACE')
+    }}"
   when: server_name == "vpn"
 
 # the script duck.sh updates the "current ip" entry in your duckdns.org account
@@ -228,7 +231,10 @@
     }}/hetzner_server_management/create_server/scripts/duck.sh
     {{ minecraft_server_domain }}
     {{ duckdns_token }}
-    {{ server_info_after_creation.hcloud_server_info[0].ipv4_address }}"
+    {{ server_info_after_creation.hcloud_server_info[0].ipv4_address }}
+    {{ lookup('ansible.builtin.env',
+    'GITHUB_WORKSPACE')
+    }}"
   when: server_name == "minecraft"
 
 # For more info look at
