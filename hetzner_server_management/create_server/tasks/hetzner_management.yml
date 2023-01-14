@@ -116,7 +116,7 @@
         type: ed25519
         owner: root
         group: root
-        regenerate: full_idempotence
+        regenerate: always
 
     - name: Debug permissions of ssh key file
       ansible.builtin.shell: |  # noqa 305
