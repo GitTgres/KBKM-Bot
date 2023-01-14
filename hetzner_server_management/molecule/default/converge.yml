@@ -1,26 +1,4 @@
 ---
-- name: Create /usr/src/KBKM-Bot on container
-  hosts: molecule-test-bot
-  tasks:
-    - name: Create /usr/src/KBKM-Bot directory
-      ansible.builtin.file:
-        path: /usr/src/KBKM-Bot
-        state: directory
-        mode: '0755'
-
-- name: Copy files to container
-  hosts: localhost
-  vars_files:
-    - ../../create_server/vars/vars.yml
-  gather_facts: no
-  tasks:
-    - name: Copy hetzner_server_management directory to container
-      ansible.builtin.shell:  # noqa 305
-        docker cp
-        ${GITHUB_WORKSPACE}/hetzner_server_management/
-        molecule-test-bot:/usr/src/KBKM-Bot/hetzner_server_management
-      changed_when: false
-
 - name: Converge
   import_playbook: ../../create_server/create_server.yml
   vars:

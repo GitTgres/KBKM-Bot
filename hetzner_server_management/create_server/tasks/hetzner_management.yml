@@ -11,6 +11,7 @@
       "{{ lookup('ansible.builtin.env', 'duckdns_domain_vpn') }}"
     minecraft_server_domain:
       "{{ lookup('ansible.builtin.env', 'duckdns_domain_minecraft') }}"
+    github_workspace: "{{ lookup('ansible.builtin.env', 'GITHUB_WORKSPACE') }}"
 
 - name: Generate ssh_config file
   ansible.builtin.template:
@@ -20,6 +21,12 @@
     group: root
     mode: 0600
     force: yes
+
+- name: Create {{ github_workspace }}/.ssh directory
+  ansible.builtin.file:
+    path: "{{ github_workspace }}/.ssh"
+    state: directory
+    mode: '0755'
 
 - name: Gather server info before potential server creation
   hetzner.hcloud.hcloud_server_info:
@@ -99,12 +106,12 @@
 
     - name: Generate an OpenSSH keypair for vpn server
       community.crypto.openssh_keypair:
-        path: /root/.ssh/vpn_ssh_key
+        path: "{{ github_workspace }}/.ssh/vpn_ssh_key"
         type: ed25519
 
     - name: Read in vpn ssh key
       ansible.builtin.shell: |
-        cat /root/.ssh/vpn_ssh_key.pub
+        "cat {{ github_workspace }}/.ssh/vpn_ssh_key.pub"
       register: public_vpn_ssh_key
       changed_when: false
 
@@ -153,12 +160,12 @@
 
     - name: Generate an OpenSSH keypair for minecraft server
       community.crypto.openssh_keypair:
-        path: /root/.ssh/minecraft_ssh_key
+        path: "{{ github_workspace }}/.ssh/minecraft_ssh_key"
         type: ed25519
 
     - name: Read in minecraft ssh key
       ansible.builtin.shell: |
-        cat /root/.ssh/minecraft_ssh_key.pub
+       "cat {{ github_workspace }}/.ssh/minecraft_ssh_key.pub"
       register: public_minecraft_ssh_key
       changed_when: false
 
@@ -211,30 +218,24 @@
 - name: Update ip address for duckdns {{ vpn_server_domain }}.duckdns.org
     -> {{ server_info_after_creation.hcloud_server_info[0].ipv4_address }}
   ansible.builtin.shell:  # noqa 305
-    "{{ lookup('ansible.builtin.env',
-    'GITHUB_WORKSPACE')
+    "{{ github_workspace
     }}/hetzner_server_management/create_server/scripts/duck.sh
     {{ vpn_server_domain }}
     {{ duckdns_token }}
     {{ server_info_after_creation.hcloud_server_info[0].ipv4_address }}
-    {{ lookup('ansible.builtin.env',
-    'GITHUB_WORKSPACE')
-    }}"
+    {{ github_workspace }}"
   when: server_name == "vpn"
 
 # the script duck.sh updates the "current ip" entry in your duckdns.org account
 - name: Update ip address for duckdns {{ minecraft_server_domain }}.duckdns.org
     -> {{ server_info_after_creation.hcloud_server_info[0].ipv4_address }}
   ansible.builtin.shell:  # noqa 305
-    "{{ lookup('ansible.builtin.env',
-    'GITHUB_WORKSPACE')
+    "{{ github_workspace
     }}/hetzner_server_management/create_server/scripts/duck.sh
     {{ minecraft_server_domain }}
     {{ duckdns_token }}
     {{ server_info_after_creation.hcloud_server_info[0].ipv4_address }}
-    {{ lookup('ansible.builtin.env',
-    'GITHUB_WORKSPACE')
-    }}"
+    {{ github_workspace }}"
   when: server_name == "minecraft"
 
 # For more info look at
