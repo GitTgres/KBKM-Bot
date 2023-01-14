@@ -117,9 +117,9 @@
       changed_when: false
 
     - name: Change permissions of ssh key file
-      ansible.builtin.shell: |  # noqa 305
-        chmod 644 {{ github_workspace }}/.ssh/vpn_ssh_key
-      changed_when: false
+      ansible.builtin.file:
+        path: "{{ github_workspace }}/.ssh/vpn_ssh_key"
+        mode: 0644
       become: true
 
     - name: Debug permissions of ssh key file
