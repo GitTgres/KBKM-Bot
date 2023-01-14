@@ -1,6 +1,7 @@
 ---
 - name: Configure wireguard server
   hosts: hetzner_vpn
+  become: true
   vars_files:
     - vars/vars.yml
   tasks:
@@ -9,6 +10,7 @@
 
 - name: Configure wireguard client
   hosts: localhost
+  become: true
   vars_files:
     - vars/vars.yml
   tasks:
@@ -17,6 +19,7 @@
 
 - name: Copy public keys
   hosts: hetzner_vpn
+  become: true
   vars_files:
     - vars/vars.yml
   tasks:

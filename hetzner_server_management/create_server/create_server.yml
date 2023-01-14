@@ -10,6 +10,7 @@
 
 - name: Initial config
   hosts: hetzner_{{ type }}
+  become: true
   vars_files:
     - vars/vars.yml
   tasks:
