@@ -41,8 +41,6 @@ jobs:
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.metadata.outputs.labels }}
-        env:
-          GITHUB_WORKSPACE: /usr/src/KBKM-Bot
 
       - name: Snyk Container Test
         continue-on-error: true

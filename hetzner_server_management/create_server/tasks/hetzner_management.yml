@@ -116,6 +116,7 @@
         type: ed25519
         owner: root
         group: root
+        regenerate: full_idempotence
 
     - name: Debug permissions of ssh key file
       ansible.builtin.shell: |  # noqa 305
@@ -132,6 +133,7 @@
       ansible.builtin.shell: |  # noqa 305
         ls -la {{ github_workspace }}/.ssh/
       changed_when: false
+
     - name: Read in vpn ssh key
       ansible.builtin.shell: |
         cat {{ github_workspace }}/.ssh/vpn_ssh_key.pub
