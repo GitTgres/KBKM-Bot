@@ -159,13 +159,17 @@
     owner: root
     group: root
 
+- name: Read in ssh key
+  ansible.builtin.shell: |
+    cat {{ github_workspace }}/.ssh/{{ server_ssh_key }}.pub
+  register: public_ssh_key_fact
+  changed_when: false
+
 - name: Create a ssh key on hetzner.cloud
   hetzner.hcloud.hcloud_ssh_key:
     name: "{{ server_ssh_key }}"
     api_token: "{{ hetzner_token }}"
-    public_key:
-      "{{ lookup('ansible.builtin.file',
-      github_workspace + '/.ssh/' + server_ssh_key + '.pub') }}"
+    public_key: "{{ public_ssh_key_fact.stdout }}"
     state: present
 
 - name: Create server based on configuration
