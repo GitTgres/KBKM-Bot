@@ -19,14 +19,14 @@
     dest: /etc/ssh/ssh_config
     owner: root
     group: root
-    mode: '0644'
+    mode: '0777'
     force: yes
 
 - name: Create {{ github_workspace }}/.ssh directory
   ansible.builtin.file:
     path: "{{ github_workspace }}/.ssh"
     state: directory
-    mode: '0700'
+    mode: '0777'
 
 - name: Create {{ github_workspace }}/wireguard directory
   ansible.builtin.file:
