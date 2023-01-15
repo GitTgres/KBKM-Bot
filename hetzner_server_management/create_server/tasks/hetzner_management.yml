@@ -152,20 +152,20 @@
         api_token: "{{ hetzner_token }}"
         state: absent
 
-- name: Generate an OpenSSH keypair for vpn server
+- name: Generate an OpenSSH keypair for server
   community.crypto.openssh_keypair:
-    path: "{{ github_workspace }}/.ssh/vpn_ssh_key"
+    path: "{{ github_workspace }}/.ssh/{{ server_ssh_key }}"
     type: ed25519
     owner: root
     group: root
 
 - name: Create a ssh key on hetzner.cloud
   hetzner.hcloud.hcloud_ssh_key:
-    name: "{{ server_name }}_ssh_key"
+    name: "{{ server_ssh_key }}"
     api_token: "{{ hetzner_token }}"
     public_key:
       "{{ lookup('ansible.builtin.file',
-      github_workspace + '/.ssh/' + server_name + '_ssh_key.pub') }}"
+      github_workspace + '/.ssh/' + server_ssh_key + '.pub') }}"
     state: present
 
 - name: Create server based on configuration
