@@ -2,6 +2,8 @@ FROM node:slim AS app
 
 # We don't need the standalone Chromium
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
+ENV in_container true
+ENV GITHUB_WORKSPACE /root
 
 # Install Google Chrome Stable and fonts
 # Note: this installs the necessary libs to make the browser work with Puppeteer.
@@ -24,7 +26,8 @@ RUN apt update; \
     apt install -y wireguard; \
     ansible-galaxy collection install community.crypto; \
     mkdir -p /root/wireguard; \
-    mkdir -p /root/.ssh
+    mkdir -p /root/.ssh; \
+    chmod 600 
 
 WORKDIR /root
 

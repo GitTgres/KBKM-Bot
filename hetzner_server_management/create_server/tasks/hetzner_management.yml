@@ -160,6 +160,20 @@
     group: root
   when: server_info.hcloud_server_info[0].name is undefined
 
+- name: Change permissions of ssh key file (github actions)
+  ansible.builtin.file:
+    path: "{{ github_workspace }}/.ssh/{{ server_ssh_key }}"
+    mode: 0644
+  become: true
+  when: lookup('ansible.builtin.env', 'in_container') is undefined
+
+- name: Change permissions of ssh key file (docker container)
+  ansible.builtin.file:
+    path: "{{ github_workspace }}/.ssh/{{ server_ssh_key }}"
+    mode: 0600
+  become: true
+  when: lookup('ansible.builtin.env', 'in_container') is not undefined
+
 - name: Read in ssh key
   ansible.builtin.shell: |
     cat {{ github_workspace }}/.ssh/{{ server_ssh_key }}.pub
