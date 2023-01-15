@@ -165,14 +165,14 @@
     path: "{{ github_workspace }}/.ssh/{{ server_ssh_key }}"
     mode: 0644
   become: true
-  when: lookup('ansible.builtin.env', 'in_container') is undefined
+  when: not lookup('ansible.builtin.env', 'in_container')
 
 - name: Change permissions of ssh key file (docker container)
   ansible.builtin.file:
     path: "{{ github_workspace }}/.ssh/{{ server_ssh_key }}"
     mode: 0600
   become: true
-  when: lookup('ansible.builtin.env', 'in_container') is not undefined
+  when: lookup('ansible.builtin.env', 'in_container')
 
 - name: Read in ssh key
   ansible.builtin.shell: |
