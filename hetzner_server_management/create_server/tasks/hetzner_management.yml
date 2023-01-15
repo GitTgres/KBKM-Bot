@@ -165,7 +165,7 @@
     path: "{{ github_workspace }}/.ssh/{{ server_ssh_key }}"
     mode: 0644
   become: true
-  when: not lookup('ansible.builtin.env', 'in_container')
+  when: lookup('ansible.builtin.env', 'in_container') == "false"
 
 - name: Change permissions of ssh key file (docker container)
   ansible.builtin.file:

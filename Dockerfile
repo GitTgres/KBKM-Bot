@@ -26,8 +26,7 @@ RUN apt update; \
     apt install -y wireguard; \
     ansible-galaxy collection install community.crypto; \
     mkdir -p /root/wireguard; \
-    mkdir -p /root/.ssh; \
-    chmod 600 
+    mkdir -p /root/.ssh
 
 WORKDIR /root
 
