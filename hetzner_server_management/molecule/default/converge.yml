@@ -1,6 +1,3 @@
 ---
 - name: Converge
   import_playbook: ../../create_server/create_server.yml
-  vars:
-    type: vpn
-    location: ash

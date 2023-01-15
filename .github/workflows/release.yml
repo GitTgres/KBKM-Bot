@@ -1,11 +1,12 @@
 name: Release
-'on':
+on:
   workflow_run:
     workflows: ["CI"]
     branches: [master]
     types:
       - completed
-
+    tags:
+      - v*
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}

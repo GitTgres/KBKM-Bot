@@ -9,7 +9,7 @@
       ansible.builtin.import_tasks: tasks/hetzner_management.yml
 
 - name: Initial config
-  hosts: hetzner_{{ type }}
+  hosts: hetzner_{{ lookup('ansible.builtin.env', 'type') }}
   become: true
   vars_files:
     - vars/vars.yml
@@ -19,8 +19,8 @@
 
 - name: Configure wireguard
   import_playbook: ../configure_wireguard/configure_wireguard.yml
-  when: type == "vpn"
+  when: lookup('ansible.builtin.env', 'type') == "vpn"
 
 - name: Configure minecraft server
   import_playbook: ../configure_minecraft/configure_minecraft.yml
-  when: type == "minecraft"
+  when: lookup('ansible.builtin.env', 'type') == "minecraft"
