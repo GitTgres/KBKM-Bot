@@ -160,11 +160,11 @@
     group: root
   when: server_info.hcloud_server_info[0].name is undefined
 
-- name: Change permissions of ssh key file
-  ansible.builtin.file:
-    path: "{{ github_workspace }}/.ssh/{{ server_ssh_key }}"
-    mode: 0644
-  become: true
+#- name: Change permissions of ssh key file
+#  ansible.builtin.file:
+#    path: "{{ github_workspace }}/.ssh/{{ server_ssh_key }}"
+#    mode: 0644
+#  become: true
 
 - name: Read in ssh key
   ansible.builtin.shell: |
