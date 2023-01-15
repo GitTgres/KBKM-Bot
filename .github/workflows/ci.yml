@@ -23,7 +23,7 @@ jobs:
       - name: Install lint dependencies
         run: pip3 install ansible yamllint ansible-lint
 
-      - name: Run Molecule lint
+      - name: Run lint tests
         working-directory: ./hetzner_server_management
         run: |
           set -e
