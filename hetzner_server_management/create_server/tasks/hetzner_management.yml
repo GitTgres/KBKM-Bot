@@ -19,20 +19,20 @@
     dest: /etc/ssh/ssh_config
     owner: root
     group: root
-    mode: '0777'
+    mode: '0644'
     force: yes
 
 - name: Create {{ github_workspace }}/.ssh directory
   ansible.builtin.file:
     path: "{{ github_workspace }}/.ssh"
     state: directory
-    mode: '1777'
+    mode: '0700'
 
 - name: Create {{ github_workspace }}/wireguard directory
   ansible.builtin.file:
     path: "{{ github_workspace }}/wireguard"
     state: directory
-    mode: '1777'
+    mode: '0700'
 
 - name: Gather server info before potential server creation
   hetzner.hcloud.hcloud_server_info:
@@ -80,146 +80,93 @@
       - "Server firewall: {{ server_firewall }}"
       - "Server ssh-key: {{ server_ssh_key }}"
 
-- name: Create firewall and ssh key for vpn server
-  when: server_name == "vpn"
-  block:
-    - name: Create a firewall for vpn server
-      hetzner.hcloud.hcloud_firewall:
-        name: vpn_firewall
-        api_token: "{{ hetzner_token }}"
-        rules:
-          - direction: in
-            protocol: icmp
-            source_ips:
-              - 0.0.0.0/0
-              - ::/0
-            description: allow icmp in
-          - direction: in
-            protocol: tcp
-            source_ips:
-              - 0.0.0.0/0
-              - ::/0
-            port: "22"
-            description: allow ssh in
-          - direction: in
-            protocol: udp
-            source_ips:
-              - 0.0.0.0/0
-              - ::/0
-            port: "51820"
-            description: allow wireguard in
-        state: present
-
-    - name: Generate an OpenSSH keypair for vpn server
-      community.crypto.openssh_keypair:
-        path: "{{ github_workspace }}/.ssh/vpn_ssh_key"
-        type: ed25519
-        owner: root
-        group: root
-        regenerate: always
-      changed_when: false
-
-    - name: Change permissions of ssh key file
-      ansible.builtin.file:
-        path: "{{ github_workspace }}/.ssh/vpn_ssh_key"
-        mode: 0644
-      become: true
-
-    - name: Read in vpn ssh key
-      ansible.builtin.shell: |
-        cat {{ github_workspace }}/.ssh/vpn_ssh_key.pub
-      register: public_vpn_ssh_key
-      changed_when: false
-
-    - name: Delete ssh key for vpn server
-      hetzner.hcloud.hcloud_ssh_key:
-        name: vpn_ssh_key
-        api_token: "{{ hetzner_token }}"
-        state: absent
-      changed_when: false
-
-    - name: Create a ssh key for vpn server
-      hetzner.hcloud.hcloud_ssh_key:
-        name: vpn_ssh_key
-        api_token: "{{ hetzner_token }}"
-        public_key: "{{ public_vpn_ssh_key.stdout }}"
-        state: present
-      changed_when: false
-
-- name: Create firewall and ssh key for minecraft server
-  when: server_name == "minecraft"
-  block:
-    - name: Create a firewall for minecraft server
-      hetzner.hcloud.hcloud_firewall:
-        name: minecraft_firewall
-        api_token: "{{ hetzner_token }}"
-        rules:
-          - direction: in
-            protocol: icmp
-            source_ips:
-              - 0.0.0.0/0
-              - ::/0
-            description: allow icmp in
-          - direction: in
-            protocol: tcp
-            source_ips:
-              - 0.0.0.0/0
-              - ::/0
-            port: "22"
-            description: allow ssh in
-          - direction: in
-            protocol: tcp
-            source_ips:
-              - 0.0.0.0/0
-              - ::/0
-            port: "25565"
-            description: allow minecraft clients to connect
-        state: present
-
-    - name: Generate an OpenSSH keypair for minecraft server
-      community.crypto.openssh_keypair:
-        path: "{{ github_workspace }}/.ssh/minecraft_ssh_key"
-        type: ed25519
-        owner: root
-        group: root
-        regenerate: always
-      changed_when: false
-
-    - name: Change permissions of ssh key file
-      ansible.builtin.file:
-        path: "{{ github_workspace }}/.ssh/minecraft_ssh_key"
-        mode: 0644
-      become: true
-
-    - name: Read in minecraft ssh key
-      ansible.builtin.shell: |
-       cat {{ github_workspace }}/.ssh/minecraft_ssh_key.pub
-      register: public_minecraft_ssh_key
-      changed_when: false
-
-    - name: Delete ssh key for minecraft server
-      hetzner.hcloud.hcloud_ssh_key:
-        name: minecraft_ssh_key
-        api_token: "{{ hetzner_token }}"
-        state: absent
-      changed_when: false
-
-    - name: Create a ssh key for minecraft server
-      hetzner.hcloud.hcloud_ssh_key:
-        name: minecraft_ssh_key
-        api_token: "{{ hetzner_token }}"
-        public_key: "{{ public_minecraft_ssh_key.stdout }}"
-        state: present
-      changed_when: false
-
-- name: Delete already existing server when the location differs
-  hetzner.hcloud.hcloud_server:
-    name: "{{ server_name }}"  # vpn or minecraft
+- name: Create a firewall for vpn server
+  hetzner.hcloud.hcloud_firewall:
+    name: vpn_firewall
     api_token: "{{ hetzner_token }}"
-    state: absent
+    rules:
+      - direction: in
+        protocol: icmp
+        source_ips:
+          - 0.0.0.0/0
+          - ::/0
+        description: allow icmp in
+      - direction: in
+        protocol: tcp
+        source_ips:
+          - 0.0.0.0/0
+          - ::/0
+        port: "22"
+        description: allow ssh in
+      - direction: in
+        protocol: udp
+        source_ips:
+          - 0.0.0.0/0
+          - ::/0
+        port: "51820"
+        description: allow wireguard in
+    state: present
+
+- name: Create a firewall for minecraft server
+  hetzner.hcloud.hcloud_firewall:
+    name: minecraft_firewall
+    api_token: "{{ hetzner_token }}"
+    rules:
+      - direction: in
+        protocol: icmp
+        source_ips:
+          - 0.0.0.0/0
+          - ::/0
+        description: allow icmp in
+      - direction: in
+        protocol: tcp
+        source_ips:
+          - 0.0.0.0/0
+          - ::/0
+        port: "22"
+        description: allow ssh in
+      - direction: in
+        protocol: tcp
+        source_ips:
+          - 0.0.0.0/0
+          - ::/0
+        port: "25565"
+        description: allow minecraft clients to connect
+    state: present
+
+# SSH KEY GENERATION AND SERVER CREATION MUST HAPPEN AT THE SAME TIME!!!
+
+- name: Delete ssh key and server when location differs
   when: (server_info.hcloud_server_info[0].name is not undefined)
     and (server_name == server_info.hcloud_server_info[0].name)
     and (server_location != server_info.hcloud_server_info[0].location)
+  block:
+    - name: Delete already existing ssh key
+      hetzner.hcloud.hcloud_ssh_key:
+        name: "{{ server_name }}_ssh_key"
+        api_token: "{{ hetzner_token }}"
+        state: absent
+    - name: Delete already existing server
+      hetzner.hcloud.hcloud_server:
+        name: "{{ server_name }}"  # vpn or minecraft
+        api_token: "{{ hetzner_token }}"
+        state: absent
+
+- name: Generate an OpenSSH keypair for vpn server
+  community.crypto.openssh_keypair:
+    path: "{{ github_workspace }}/.ssh/vpn_ssh_key"
+    type: ed25519
+    owner: root
+    group: root
+
+- name: Create a ssh key on hetzner.cloud
+  hetzner.hcloud.hcloud_ssh_key:
+    name: "{{ server_name }}_ssh_key"
+    api_token: "{{ hetzner_token }}"
+    public_key:
+      "{{ lookup('ansible.builtin.file',
+      github_workspace + '/.ssh/' + server_name + '_ssh_key.pub') }}"
+    state: present
 
 - name: Create server based on configuration
   hetzner.hcloud.hcloud_server:

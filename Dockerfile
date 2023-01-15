@@ -13,7 +13,7 @@ RUN apt-get update && apt-get install gnupg wget -y && \
   rm -rf /var/lib/apt/lists/*
 
 # Install required dependencies for the bot
-RUN apt update; \ 
+RUN apt update; \
     apt install -y python3-pip; \
     pip3 install --upgrade pip; \
     pip3 install ansible==7.1.0; \
@@ -23,10 +23,10 @@ RUN apt update; \
     apt-get install curl -y; \
     apt install -y wireguard; \
     ansible-galaxy collection install community.crypto; \
-    mkdir -p /usr/src/KBKM-Bot/wireguard; \
+    mkdir -p /root/KBKM-Bot/wireguard; \
     mkdir -p /root/.ssh
 
-WORKDIR /usr/src/KBKM-Bot
+WORKDIR /root
 
 COPY package*.json ./
 
