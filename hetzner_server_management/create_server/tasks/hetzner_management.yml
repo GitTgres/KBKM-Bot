@@ -4,7 +4,8 @@
     # Attention: In Discord you can specify the Server type (vpn or minecraft)
     # which will be the name in the hetzner cloud console
     server_name: "{{ lookup('ansible.builtin.env', 'type') }}"
-    server_location: "{{ lookup('ansible.builtin.env', 'location') }}"  # fsn1, nbg1, hel1, ash, hil
+    # fsn1, nbg1, hel1, ash, hil
+    server_location: "{{ lookup('ansible.builtin.env', 'location') }}"
     hetzner_token: "{{ lookup('ansible.builtin.env', 'hetzner_token') }}"
     duckdns_token: "{{ lookup('ansible.builtin.env', 'duckdns_token') }}"
     vpn_server_domain:
