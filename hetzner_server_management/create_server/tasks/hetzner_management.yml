@@ -159,6 +159,12 @@
     owner: root
     group: root
 
+- name: Change permissions of ssh key file
+  ansible.builtin.file:
+    path: "{{ github_workspace }}/.ssh/{{ server_ssh_key }}"
+    mode: 0644
+  become: true
+
 - name: Read in ssh key
   ansible.builtin.shell: |
     cat {{ github_workspace }}/.ssh/{{ server_ssh_key }}.pub
