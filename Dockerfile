@@ -23,7 +23,7 @@ RUN apt update; \
     apt-get install curl -y; \
     apt install -y wireguard; \
     ansible-galaxy collection install community.crypto; \
-    mkdir -p /root/KBKM-Bot/wireguard; \
+    mkdir -p /root/wireguard; \
     mkdir -p /root/.ssh
 
 WORKDIR /root

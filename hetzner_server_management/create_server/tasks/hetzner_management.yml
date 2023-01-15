@@ -32,7 +32,7 @@
   ansible.builtin.file:
     path: "{{ github_workspace }}/wireguard"
     state: directory
-    mode: '0700'
+    mode: '0644'
 
 - name: Gather server info before potential server creation
   hetzner.hcloud.hcloud_server_info:
