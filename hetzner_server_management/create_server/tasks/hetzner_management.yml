@@ -151,13 +151,12 @@
         name: "{{ server_name }}"  # vpn or minecraft
         api_token: "{{ hetzner_token }}"
         state: absent
-
-- name: Generate an OpenSSH keypair for server
-  community.crypto.openssh_keypair:
-    path: "{{ github_workspace }}/.ssh/{{ server_ssh_key }}"
-    type: ed25519
-    owner: root
-    group: root
+    - name: Generate an OpenSSH keypair for server
+      community.crypto.openssh_keypair:
+        path: "{{ github_workspace }}/.ssh/{{ server_ssh_key }}"
+        type: ed25519
+        owner: root
+        group: root
 
 - name: Change permissions of ssh key file
   ansible.builtin.file:
