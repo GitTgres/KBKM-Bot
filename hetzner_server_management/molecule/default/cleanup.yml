@@ -18,31 +18,31 @@
 
         - name: Delete vpn server
           hetzner.hcloud.hcloud_server:
-            name: "{{ type }}"
+            name: vpn
             api_token: "{{ lookup('ansible.builtin.env', 'hetzner_token') }}"
             state: absent
-          when: type == "vpn"
+          when: lookup('ansible.builtin.env', 'type') == "vpn"
 
         - name: Delete vpn ssh key
           hetzner.hcloud.hcloud_ssh_key:
             name: vpn_ssh_key
             api_token: "{{ lookup('ansible.builtin.env', 'hetzner_token') }}"
             state: absent
-          when: type == "vpn"
+          when: lookup('ansible.builtin.env', 'type') == "vpn"
 
         - name: Delete minecraft server
           hetzner.hcloud.hcloud_server:
-            name: "{{ type }}"
+            name: minecraft
             api_token: "{{ lookup('ansible.builtin.env', 'hetzner_token') }}"
             state: absent
-          when: type == "minecraft"
+          when: lookup('ansible.builtin.env', 'type') == "minecraft"
 
         - name: Delete minecraft ssh key
           hetzner.hcloud.hcloud_ssh_key:
             name: minecraft_ssh_key
             api_token: "{{ lookup('ansible.builtin.env', 'hetzner_token') }}"
             state: absent
-          when: type == "minecraft"
+          when: lookup('ansible.builtin.env', 'type') == "minecraft"
 
       rescue:
         - name: It's ok we're at startup

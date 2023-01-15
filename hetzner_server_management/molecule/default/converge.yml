@@ -1,3 +1,6 @@
 ---
 - name: Converge
   import_playbook: ../../create_server/create_server.yml
+  vars:
+    type: "{{ lookup('ansible.builtin.env', 'type') }}"
+    location: "{{ lookup('ansible.builtin.env', 'location') }}"
