@@ -21,11 +21,14 @@ jobs:
           python-version: '3.x'
 
       - name: Install lint dependencies
-        run: pip3 install ansible molecule[docker] yamllint ansible-lint
+        run: pip3 install yamllint ansible-lint
 
       - name: Run Molecule lint
         working-directory: ./hetzner_server_management
-        run: molecule lint
+        run: |
+          set -e
+          yamllint .
+          ansible-lint
         env:
           PY_COLORS: '1'
           ANSIBLE_FORCE_COLOR: '1'
@@ -46,7 +49,7 @@ jobs:
       - run: pip install -r requirements.txt
 
       - name: Install test dependencies
-        run: pip3 install ansible molecule[docker] docker yamllint ansible-lint
+        run: pip3 install ansible molecule[docker] docker
 
       - name: Run Molecule tests
         working-directory: ./hetzner_server_management
