@@ -23,10 +23,24 @@
             state: absent
           when: type == "vpn"
 
+        - name: Delete vpn ssh key
+          hetzner.hcloud.hcloud_ssh_key:
+            name: vpn_ssh_key
+            api_token: "{{ hetzner_token }}"
+            state: absent
+          when: type == "vpn"
+
         - name: Delete minecraft server
           hetzner.hcloud.hcloud_server:
             name: "{{ type }}"
             api_token: "{{ lookup('ansible.builtin.env', 'hetzner_token') }}"
+            state: absent
+          when: type == "minecraft"
+
+        - name: Delete minecraft ssh key
+          hetzner.hcloud.hcloud_ssh_key:
+            name: minecraft_ssh_key
+            api_token: "{{ hetzner_token }}"
             state: absent
           when: type == "minecraft"
 
