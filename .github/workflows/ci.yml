@@ -57,10 +57,10 @@ jobs:
         env:
           type: vpn
           location: ash
-          hetzner_token: ${{ secrets.HETZNER_TOKEN }}
-          duckdns_token: ${{ secrets.DUCKDNS_TOKEN }}
-          duckdns_domain_vpn: ${{ secrets.DUCKDNS_DOMAIN_VPN }}
-          duckdns_domain_minecraft: ${{ secrets.DUCKDNS_DOMAIN_MINECRAFT }}
+          HCLOUD_TOKEN: ${{ secrets.HCLOUD_TOKEN }}
+          DUCKDNS_TOKEN: ${{ secrets.DUCKDNS_TOKEN }}
+          DUCKDNS_DOMAIN_VPN: ${{ secrets.DUCKDNS_DOMAIN_VPN }}
+          DUCKDNS_DOMAIN_MINECRAFT: ${{ secrets.DUCKDNS_DOMAIN_MINECRAFT }}
           in_container: 'false'
           PY_COLORS: '1'
           ANSIBLE_FORCE_COLOR: '1'
@@ -89,10 +89,10 @@ jobs:
         env:
           type: minecraft
           location: nbg1
-          hetzner_token: ${{ secrets.HETZNER_TOKEN }}
-          duckdns_token: ${{ secrets.DUCKDNS_TOKEN }}
-          duckdns_domain_vpn: ${{ secrets.DUCKDNS_DOMAIN_VPN }}
-          duckdns_domain_minecraft: ${{ secrets.DUCKDNS_DOMAIN_MINECRAFT }}
+          HCLOUD_TOKEN: ${{ secrets.HCLOUD_TOKEN }}
+          DUCKDNS_TOKEN: ${{ secrets.DUCKDNS_TOKEN }}
+          DUCKDNS_DOMAIN_VPN: ${{ secrets.DUCKDNS_DOMAIN_VPN }}
+          DUCKDNS_DOMAIN_MINECRAFT: ${{ secrets.DUCKDNS_DOMAIN_MINECRAFT }}
           in_container: 'false'
           PY_COLORS: '1'
           ANSIBLE_FORCE_COLOR: '1'

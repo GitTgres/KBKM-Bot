@@ -6,12 +6,12 @@
     server_name: "{{ type }}"
     # fsn1, nbg1, hel1, ash, hil
     server_location: "{{ location }}"
-    hetzner_token: "{{ lookup('ansible.builtin.env', 'hetzner_token') }}"
-    duckdns_token: "{{ lookup('ansible.builtin.env', 'duckdns_token') }}"
+    hetzner_token: "{{ lookup('ansible.builtin.env', 'HCLOUD_TOKEN') }}"
+    duckdns_token: "{{ lookup('ansible.builtin.env', 'DUCKDNS_TOKEN') }}"
     vpn_server_domain:
-      "{{ lookup('ansible.builtin.env', 'duckdns_domain_vpn') }}"
+      "{{ lookup('ansible.builtin.env', 'DUCKDNS_DOMAIN_VPN') }}"
     minecraft_server_domain:
-      "{{ lookup('ansible.builtin.env', 'duckdns_domain_minecraft') }}"
+      "{{ lookup('ansible.builtin.env', 'DUCKDNS_DOMAIN_MINECRAFT') }}"
     github_workspace: "{{ lookup('ansible.builtin.env', 'GITHUB_WORKSPACE') }}"
 
 - name: Generate ssh_config file
@@ -166,7 +166,7 @@
     path: "{{ github_workspace }}/.ssh/{{ server_ssh_key }}"
     mode: 0600
   become: true
-  when: lookup('ansible.builtin.env', 'in_container')
+  when: lookup('ansible.builtin.env', 'IN_CONTAINER')
   changed_when: false
 
 - name: Change permissions of ssh key file (github actions)
@@ -174,7 +174,7 @@
     path: "{{ github_workspace }}/.ssh/{{ server_ssh_key }}"
     mode: 0644
   become: true
-  when: lookup('ansible.builtin.env', 'in_container') == "false"
+  when: lookup('ansible.builtin.env', 'IN_CONTAINER') == "false"
   changed_when: false
 
 - name: Read in ssh key

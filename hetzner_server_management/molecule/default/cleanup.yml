@@ -19,28 +19,28 @@
         - name: Delete vpn server
           hetzner.hcloud.hcloud_server:
             name: vpn
-            api_token: "{{ lookup('ansible.builtin.env', 'hetzner_token') }}"
+            api_token: "{{ lookup('ansible.builtin.env', 'HCLOUD_TOKEN') }}"
             state: absent
           when: lookup('ansible.builtin.env', 'type') == "vpn"
 
         - name: Delete vpn ssh key
           hetzner.hcloud.hcloud_ssh_key:
             name: vpn_ssh_key
-            api_token: "{{ lookup('ansible.builtin.env', 'hetzner_token') }}"
+            api_token: "{{ lookup('ansible.builtin.env', 'HCLOUD_TOKEN') }}"
             state: absent
           when: lookup('ansible.builtin.env', 'type') == "vpn"
 
         - name: Delete minecraft server
           hetzner.hcloud.hcloud_server:
             name: minecraft
-            api_token: "{{ lookup('ansible.builtin.env', 'hetzner_token') }}"
+            api_token: "{{ lookup('ansible.builtin.env', 'HCLOUD_TOKEN') }}"
             state: absent
           when: lookup('ansible.builtin.env', 'type') == "minecraft"
 
         - name: Delete minecraft ssh key
           hetzner.hcloud.hcloud_ssh_key:
             name: minecraft_ssh_key
-            api_token: "{{ lookup('ansible.builtin.env', 'hetzner_token') }}"
+            api_token: "{{ lookup('ansible.builtin.env', 'HCLOUD_TOKEN') }}"
             state: absent
           when: lookup('ansible.builtin.env', 'type') == "minecraft"
 

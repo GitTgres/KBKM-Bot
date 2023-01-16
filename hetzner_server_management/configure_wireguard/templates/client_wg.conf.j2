@@ -5,6 +5,6 @@ DNS = 8.8.8.8
 
 [Peer]
 PublicKey = {{ hostvars['hetzner_vpn'].wireguard__fact_public_key }}
-Endpoint = {{ lookup('ansible.builtin.env','duckdns_domain_vpn') }}.duckdns.org:51820
+Endpoint = {{ lookup('ansible.builtin.env','DUCKDNS_DOMAIN_VPN') }}.duckdns.org:51820
 AllowedIPs = 0.0.0.0/0
 PersistentKeepalive = 25

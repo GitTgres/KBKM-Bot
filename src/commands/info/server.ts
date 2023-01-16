@@ -17,7 +17,7 @@ export default new Command({
                 try 
                 {
                     //const serverType = interaction.options.getString('typ');
-                    const serverInfo = (await exec(`/home/tobi/go/bin/hcloud server list -o columns=name,status,location -o noheader`)).stdout.split("\n");
+                    const serverInfo = (await exec(`/root/go/bin/hcloud server list -o columns=name,status,location -o noheader`)).stdout.split("\n");
 
                     const msgEmbed = new MessageEmbed()
                     .setTitle('Server Informationen');
@@ -29,13 +29,16 @@ export default new Command({
                             return el != '';
                         });
 
+                        let domain = filteredInfos.at(0);
                         let port = filteredInfos.at(0);
                         if (port === "vpn") {
                             port = "51820";
+                            domain = process.env.DUCKDNS_DOMAIN_VPN
                         }
                         else if (port === "minecraft")
                         {
                             port = "25565";
+                            domain = process.env.DUCKDNS_DOMAIN_MINECRAFT
                         }
 
                         let standort = filteredInfos.at(2);
@@ -63,7 +66,7 @@ export default new Command({
                         msgEmbed.addFields([
                             {
                                 name: "Serveradresse",
-                                value: `kbkm-${filteredInfos.at(0)}.duckdns.org:${port}`,
+                                value: `${domain}.duckdns.org:${port}`,
                                 inline: true
                             },
                             {
@@ -93,19 +96,10 @@ export default new Command({
                     }
                     else
                     {
-                        const attachment = new MessageAttachment("/root/wireguard/wg.png");
-
                         msgEmbed
                         .setColor('#0x62ff00');
 
-                        const msgEmbed2 = new MessageEmbed()
-
-                        msgEmbed2
-                        .setColor('#0x62ff00')
-                        .setTitle('QR-Code für Wireguard App')
-                        .setImage("attachment://wg.png");
-
-                        interaction.followUp({embeds: [msgEmbed2, msgEmbed], files: [attachment, "/root/wireguard/wg.conf"]});
+                        interaction.followUp({embeds: [msgEmbed]});
                     }
 
                 } 
@@ -190,8 +184,8 @@ export default new Command({
                 else if (serverType === 'minecraft')
                 {
                     res.on("close", code => {
-                        console.log(`Minecraft server fertig. Erreichbar unter: ${process.env.duckdns_domain_minecraft}.duckdns.org:25565`);
-                        interaction.followUp(`Minecraft server erstellt. Erreichbar unter: ${process.env.duckdns_domain_minecraft}.duckdns.org:25565`);
+                        console.log(`Minecraft server fertig. Erreichbar unter: ${process.env.DUCKDNS_DOMAIN_MINECRAFT}.duckdns.org:25565`);
+                        interaction.followUp(`Minecraft server erstellt. Erreichbar unter: ${process.env.DUCKDNS_DOMAIN_MINECRAFT}.duckdns.org:25565`);
                     })
                 }
                         //res.stderr.on('data', (data) => {

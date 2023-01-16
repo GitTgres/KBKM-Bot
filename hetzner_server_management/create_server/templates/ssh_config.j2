@@ -17,12 +17,12 @@
 
 Include /etc/ssh/ssh_config.d/*.conf
 
-Host {{ lookup('ansible.builtin.env', 'duckdns_domain_vpn') }}.duckdns.org
+Host {{ lookup('ansible.builtin.env', 'DUCKDNS_DOMAIN_VPN') }}.duckdns.org
   IdentityFile {{ lookup('ansible.builtin.env', 'GITHUB_WORKSPACE') }}/.ssh/vpn_ssh_key
   StrictHostKeyChecking no
   UserKnownHostsFile=/dev/null
 
-Host {{ lookup('ansible.builtin.env', 'duckdns_domain_minecraft') }}.duckdns.org
+Host {{ lookup('ansible.builtin.env', 'DUCKDNS_DOMAIN_MINECRAFT') }}.duckdns.org
   IdentityFile {{ lookup('ansible.builtin.env', 'GITHUB_WORKSPACE') }}/.ssh/minecraft_ssh_key
   StrictHostKeyChecking no
   UserKnownHostsFile=/dev/null

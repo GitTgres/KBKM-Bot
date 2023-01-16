@@ -1,8 +1,12 @@
-FROM node:slim AS app
+FROM golang AS hcloud_cli_builder
+
+RUN go install github.com/hetznercloud/cli/cmd/hcloud@latest
+
+FROM node:slim
 
 # We don't need the standalone Chromium
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
-ENV in_container true
+ENV IN_CONTAINER true
 ENV GITHUB_WORKSPACE /root
 
 # Install Google Chrome Stable and fonts
@@ -37,5 +41,7 @@ RUN npm install
 COPY . .
 
 RUN npm run build
+
+COPY --from=hcloud_cli_builder /go/bin/hcloud /root/go/bin/hcloud
 
 CMD ["npm", "run", "start:prod"]
