@@ -1,0 +1,89 @@
+---
+- name: Get server information on https://www.hetzner.com/cloud
+  hosts: localhost
+  tasks:
+    - name: Remove vpn logs
+      ansible.builtin.file:
+        path: /root/vpn_server_info_log.txt
+        state: absent
+
+    - name: Remove minecraft logs
+      ansible.builtin.file:
+        path: /root/minecraft_server_info_log.txt
+        state: absent
+
+    - name: ensure vpn log file exists
+      copy:
+        content: ""
+        dest: /root/vpn_server_info_log.txt
+        force: no
+        group: root
+        owner: root
+        mode: '0777'
+
+    - name: ensure minecraft log file exists
+      copy:
+        content: ""
+        dest: /root/minecraft_server_info_log.txt
+        force: no
+        group: root
+        owner: root
+        mode: '0777'
+
+    - name: Gather vpn server info
+      hetzner.hcloud.hcloud_server_info:
+        name: vpn
+        api_token: "{{ lookup('ansible.builtin.env', 'hetzner_token') }}"
+      register: vpn_server_info
+
+    - name: Gather minecraft server info
+      hetzner.hcloud.hcloud_server_info:
+        name: minecraft
+        api_token: "{{ lookup('ansible.builtin.env', 'hetzner_token') }}"
+      register: minecraft_server_info
+
+    - name: Print vpn server info
+      ansible.builtin.debug:
+        var: vpn_server_info
+
+    - name: Print minecraft server info
+      ansible.builtin.debug:
+        var: minecraft_server_info
+
+    - name: Generate log file with vpn server info
+      when: vpn_server_info.hcloud_server_info[0] is not undefined
+      block:
+      - name: vpn server info fact
+        ansible.builtin.set_fact:
+          vpn_server_domain:
+            "{{ lookup('ansible.builtin.env', 'duckdns_domain_vpn') }}"
+          vpn_server_running: true
+          vpn_server_location:
+            "{{ vpn_server_info.hcloud_server_info[0].location }}"
+      - name: Generate log file
+        ansible.builtin.template:
+          src: vpn_server_info_log.j2
+          dest: /root/vpn_server_info_log.txt
+          owner: root
+          group: root
+          mode: '0777'
+          force: yes
+
+    - name: Generate log file with minecraft server info
+      when: minecraft_server_info.hcloud_server_info[0] is not undefined
+      block:
+      - name: minecraft server info fact
+        ansible.builtin.set_fact:
+          minecraft_server_domain:
+            "{{ lookup('ansible.builtin.env', 'duckdns_domain_minecraft') }}"
+          minecraft_server_running: true
+          minecraft_server_location:
+            "{{ minecraft_server_info.hcloud_server_info[0].location }}"
+      - name: Generate log file
+        ansible.builtin.template:
+          src: minecraft_server_info_log.j2
+          dest: /root/minecraft_server_info_log.txt
+          owner: root
+          group: root
+          mode: '0777'
+          force: yes

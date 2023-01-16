@@ -10,106 +10,106 @@ export default new Command({
     name: "server",
     description: "Ermöglicht die Kontrolle über einen Server",
     run: async ({ interaction }) => {
-    
-        switch (interaction.options.getSubcommand()) 
+
+        switch (interaction.options.getSubcommand())
         {
             case "info":
-                try 
+                try
                 {
                     //const serverType = interaction.options.getString('typ');
-                    const serverInfo = (await exec(`/home/tobi/go/bin/hcloud server list -o columns=name,status,location -o noheader`)).stdout.split("\n");
+                    //const serverInfo = (await exec(`/home/tobi/go/bin/hcloud server list -o columns=name,status,location -o noheader`)).stdout.split("\n");
+                    const res = spawn('ansible-playbook', ['get_server_info.yml'], {cwd: '/root/hetzner_server_management/get_server_info'})
 
-                    const msgEmbed = new MessageEmbed()
-                    .setTitle('Server Informationen');
+                    res.on("close", code => {
 
-                    serverInfo.forEach((server) => {
-                        if (server === '') return;
-                        const info = server.split("   ");
-                        const filteredInfos = info.filter(function (el) {
-                            return el != '';
+                        var simpleBarrier = require('simple-barrier'),
+                            fs = require('fs');
+
+                        const msgEmbed = new MessageEmbed()
+                        .setTitle('Server Informationen');
+
+                        var barrier = simpleBarrier();
+
+                        fs.readFile('/root/vpn_server_info_log.txt', barrier.waitOn());
+                        fs.readFile('/root/minecraft_server_info_log.txt', barrier.waitOn());
+
+
+                        barrier.endWith(function( results ){
+                            let absent_counter = 0;
+                            for (let i = 0; i < 2; i++) {
+                                const server = results[i];
+                                let filteredInfos = server.toString().trim().split(";");
+                                console.log(filteredInfos);
+
+                                if (filteredInfos.at(0) === '')
+                                {
+                                    absent_counter++;
+                                    return;
+                                }
+
+                                let standort = filteredInfos.at(2);
+
+                                if (standort.includes('nbg'))
+                                {
+                                    standort = '🇩🇪 Nürnberg'
+                                }
+                                else if (standort.includes('fsn'))
+                                {
+                                    standort = '🇩🇪 Falkenstein'
+                                }
+                                else if (standort.includes('hel'))
+                                {
+                                    standort = '🇫🇮 Helsinki'
+                                }
+                                else if (standort.includes('ash'))
+                                {
+                                    standort = '🇺🇸 Ashburn'
+                                }
+                                else if (standort.includes('hil'))
+                                {
+                                    standort = '🇺🇸 Hillsboro'
+                                }
+
+                                msgEmbed.addFields([
+                                    {
+                                        name: "Serveradresse",
+                                        value: `${filteredInfos.at(0)}.duckdns.org:${filteredInfos.at(3)}`,
+                                        inline: true
+                                    },
+                                    {
+                                        name: "Status",
+                                        value: "running",
+                                        inline: true
+                                    },
+                                    {
+                                        name: "Standort",
+                                        value: `${standort}`,
+                                        inline: true
+                                    },
+                                ]);
+                            }
+
+                            //When all servers are not running -> show embed with different color and thumbnail
+                            if (absent_counter == 2)
+                            {
+                                msgEmbed
+                                .setColor('#0xff0000')
+                                .setDescription("Kein Server ist online.")
+                                .setThumbnail('https://c.tenor.com/Qq-mR0Livi0AAAAC/angry-stadium-man-stadium.gif');
+
+                                interaction.followUp({embeds: [msgEmbed]});
+                            }
+                            else
+                            {
+                                msgEmbed
+                                .setColor('#0x62ff00');
+
+                                interaction.followUp({embeds: [msgEmbed]});
+                            }
                         });
-
-                        let port = filteredInfos.at(0);
-                        if (port === "vpn") {
-                            port = "51820";
-                        }
-                        else if (port === "minecraft")
-                        {
-                            port = "25565";
-                        }
-
-                        let standort = filteredInfos.at(2);
-                        if (standort.includes('nbg')) 
-                        {
-                            standort = '🇩🇪 Nürnberg'
-                        }
-                        else if (standort.includes('fsn'))
-                        {
-                            standort = '🇩🇪 Falkenstein'
-                        }
-                        else if (standort.includes('hel'))
-                        {
-                            standort = '🇫🇮 Helsinki'
-                        }
-                        else if (standort.includes('ash'))
-                        {
-                            standort = '🇺🇸 Ashburn'
-                        }
-                        else if (standort.includes('hil'))
-                        {
-                            standort = '🇺🇸 Hillsboro'
-                        }
-
-                        msgEmbed.addFields([
-                            {
-                                name: "Serveradresse",
-                                value: `kbkm-${filteredInfos.at(0)}.duckdns.org:${port}`,
-                                inline: true
-                            },
-                            {
-                                name: "Status",
-                                value: filteredInfos.at(1),
-                                inline: true
-                            },
-                            {
-                                name: "Standort",
-                                value: `${standort}`,
-                                inline: true
-                            },
-                        ])
-
                     });
-                    console.log("Hier sind Infos über den server:" + serverInfo + "!");
-
-                    //When all servers are running -> show embed with different color and thumbnail
-                    if (serverInfo[0] == "") 
-                    {
-                        msgEmbed
-                        .setColor('#0xff0000')
-                        .setDescription("Kein Server ist online.")
-                        .setThumbnail('https://c.tenor.com/Qq-mR0Livi0AAAAC/angry-stadium-man-stadium.gif');
-
-                        interaction.followUp({embeds: [msgEmbed]});
-                    }
-                    else
-                    {
-                        const attachment = new MessageAttachment("/root/wireguard/wg.png");
-
-                        msgEmbed
-                        .setColor('#0x62ff00');
-
-                        const msgEmbed2 = new MessageEmbed()
-
-                        msgEmbed2
-                        .setColor('#0x62ff00')
-                        .setTitle('QR-Code für Wireguard App')
-                        .setImage("attachment://wg.png");
-
-                        interaction.followUp({embeds: [msgEmbed2, msgEmbed], files: [attachment, "/root/wireguard/wg.conf"]});
-                    }
-
-                } 
-                catch (error) 
+                }
+                catch (error)
                 {
                     console.error(error);
                     interaction.followUp(`${error.message} ❌`);
