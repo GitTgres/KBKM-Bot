@@ -134,7 +134,7 @@ export default new Command({
                         child.on("close", code => {
                             const attachment = new MessageAttachment("/root/wireguard/wg.png");
                             const msgEmbed = new MessageEmbed()
-                                .setTitle('QR-Code für Wireguard App')
+                                .setTitle('QR code for WireGuard App')
                                 .setColor('#0x62ff00')
                                 .setImage("attachment://wg.png");
 
