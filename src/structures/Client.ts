@@ -103,7 +103,7 @@ export class ExtendedClient extends Client {
                                             },
                                             {
                                                 name: "🇫🇮 Helsinki",
-                                                value: "helsinki1"
+                                                value: "hel1"
                                             },
                                             {
                                                 name: "🇺🇸 Ashburn",
