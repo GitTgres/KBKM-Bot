@@ -45,7 +45,7 @@ export class ExtendedClient extends Client {
                         options: [
                             {
                                 name: 'hidden',
-                                description: 'Der Watch2Gether Link wird nur dir angezeigt',
+                                description: 'The Watch2Gether link is only shown to you',
                                 required: false,
                                 type: Constants.ApplicationCommandOptionTypes.STRING,
                                 choices: [
@@ -65,12 +65,12 @@ export class ExtendedClient extends Client {
                         options: [
                             {
                                 name: 'info',
-                                description: 'Gibt Infos über den Server aus',
+                                description: 'Prints information about the running servers',
                                 type: Constants.ApplicationCommandOptionTypes.SUB_COMMAND,
                                 options: [
                                     {
                                         name: 'hidden',
-                                        description: 'Die Infos über den Server werden nur dir angezeigt',
+                                        description: 'The information is only shown to you',
                                         required: false,
                                         type: Constants.ApplicationCommandOptionTypes.STRING,
                                         choices: [
@@ -84,12 +84,12 @@ export class ExtendedClient extends Client {
                             },
                             {
                                 name: 'start',
-                                description: 'Startet den Server',
+                                description: 'Starts a server',
                                 type: Constants.ApplicationCommandOptionTypes.SUB_COMMAND,
                                 options: [
                                     {
-                                        name: "standort",
-                                        description: "Standort des Servers",
+                                        name: "location",
+                                        description: "location of the server",
                                         required: true,
                                         type: Constants.ApplicationCommandOptionTypes.STRING,
                                         choices: [
@@ -116,8 +116,8 @@ export class ExtendedClient extends Client {
                                         ]
                                     },
                                     {
-                                        name: "typ",
-                                        description: "Typ des Servers",
+                                        name: "type",
+                                        description: "Type of the server",
                                         required: true,
                                         type: Constants.ApplicationCommandOptionTypes.STRING,
                                         choices: [
@@ -133,7 +133,7 @@ export class ExtendedClient extends Client {
                                     },
                                     {
                                         name: 'hidden',
-                                        description: 'Nur dir wird angezeigt, dass der Server gestartet wird',
+                                        description: 'Just you know that a server starts',
                                         required: false,
                                         type: Constants.ApplicationCommandOptionTypes.STRING,
                                         choices: [
@@ -149,8 +149,6 @@ export class ExtendedClient extends Client {
                     });
             }
         });
-        console.log(`Registering commands to ${guildId}`);
-        
     }
 
     async registerModules() {

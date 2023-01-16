@@ -10,17 +10,16 @@ export default new Command({
     name: "server",
     description: "Ermöglicht die Kontrolle über einen Server",
     run: async ({ interaction }) => {
-    
-        switch (interaction.options.getSubcommand()) 
+        switch (interaction.options.getSubcommand())
         {
             case "info":
-                try 
+                try
                 {
                     //const serverType = interaction.options.getString('typ');
                     const serverInfo = (await exec(`/root/go/bin/hcloud server list -o columns=name,status,location -o noheader`)).stdout.split("\n");
 
                     const msgEmbed = new MessageEmbed()
-                    .setTitle('Server Informationen');
+                    .setTitle('Server information');
 
                     serverInfo.forEach((server) => {
                         if (server === '') return;
@@ -41,55 +40,54 @@ export default new Command({
                             domain = process.env.DUCKDNS_DOMAIN_MINECRAFT
                         }
 
-                        let standort = filteredInfos.at(2);
-                        if (standort.includes('nbg')) 
+                        let location = filteredInfos.at(2);
+                        if (location.includes('nbg'))
                         {
-                            standort = '🇩🇪 Nürnberg'
+                            location = '🇩🇪 Nürnberg'
                         }
-                        else if (standort.includes('fsn'))
+                        else if (location.includes('fsn'))
                         {
-                            standort = '🇩🇪 Falkenstein'
+                            location = '🇩🇪 Falkenstein'
                         }
-                        else if (standort.includes('hel'))
+                        else if (location.includes('hel'))
                         {
-                            standort = '🇫🇮 Helsinki'
+                            location = '🇫🇮 Helsinki'
                         }
-                        else if (standort.includes('ash'))
+                        else if (location.includes('ash'))
                         {
-                            standort = '🇺🇸 Ashburn'
+                            location = '🇺🇸 Ashburn'
                         }
-                        else if (standort.includes('hil'))
+                        else if (location.includes('hil'))
                         {
-                            standort = '🇺🇸 Hillsboro'
+                            location = '🇺🇸 Hillsboro'
                         }
 
                         msgEmbed.addFields([
                             {
-                                name: "Serveradresse",
+                                name: "server address",
                                 value: `${domain}.duckdns.org:${port}`,
                                 inline: true
                             },
                             {
-                                name: "Status",
+                                name: "status",
                                 value: filteredInfos.at(1),
                                 inline: true
                             },
                             {
-                                name: "Standort",
-                                value: `${standort}`,
+                                name: "location",
+                                value: `${location}`,
                                 inline: true
                             },
                         ])
 
                     });
-                    console.log("Hier sind Infos über den server:" + serverInfo + "!");
 
                     //When all servers are running -> show embed with different color and thumbnail
-                    if (serverInfo[0] == "") 
+                    if (serverInfo[0] == "")
                     {
                         msgEmbed
                         .setColor('#0xff0000')
-                        .setDescription("Kein Server ist online.")
+                        .setDescription("No server is online.")
                         .setThumbnail('https://c.tenor.com/Qq-mR0Livi0AAAAC/angry-stadium-man-stadium.gif');
 
                         interaction.followUp({embeds: [msgEmbed]});
@@ -102,8 +100,8 @@ export default new Command({
                         interaction.followUp({embeds: [msgEmbed]});
                     }
 
-                } 
-                catch (error) 
+                }
+                catch (error)
                 {
                     console.error(error);
                     interaction.followUp(`${error.message} ❌`);
@@ -111,12 +109,11 @@ export default new Command({
                 break;
             case "start":
                 const serverType = interaction.options.getString('typ');
-                const serverLocation = interaction.options.getString('standort');
+                const serverLocation = interaction.options.getString('location');
 
                 //create new server
                 const res = spawn('ansible-playbook', ['create_server.yml', '-e', `type=${serverType}`, '-e', `location=${serverLocation}`], {cwd: '/root/hetzner_server_management/create_server'})
-                
-                console.log("Starte ansible playbook.");
+
                 res.stdout.pipe(process.stdout)
                 //logging in discord
                 /*
@@ -130,7 +127,7 @@ export default new Command({
                     }
                     interaction.editReply(`\`\`\`${log}\`\`\``);
                 });*/
-                if (serverType === 'vpn') 
+                if (serverType === 'vpn')
                 {
                     res.on("close", code => {
                         const child = spawn('qrencode', ['-t', 'png', '-r', 'wg.conf', '-o', 'wg.png'], {cwd: '/root/wireguard'});
@@ -141,51 +138,51 @@ export default new Command({
                                 .setColor('#0x62ff00')
                                 .setImage("attachment://wg.png");
 
-                                let standort = serverLocation;
-                            
-                                if (standort.includes('nbg')) 
+                                let location = serverLocation;
+
+                                if (location.includes('nbg'))
                                 {
-                                    standort = '🇩🇪 Nürnberg'
+                                    location = '🇩🇪 Nürnberg'
                                 }
-                                else if (standort.includes('fsn'))
+                                else if (location.includes('fsn'))
                                 {
-                                    standort = '🇩🇪 Falkenstein'
+                                    location = '🇩🇪 Falkenstein'
                                 }
-                                else if (standort.includes('hel'))
+                                else if (location.includes('hel'))
                                 {
-                                    standort = '🇫🇮 Helsinki'
+                                    location = '🇫🇮 Helsinki'
                                 }
-                                else if (standort.includes('ash'))
+                                else if (location.includes('ash'))
                                 {
-                                    standort = '🇺🇸 Ashburn'
+                                    location = '🇺🇸 Ashburn'
                                 }
-                                else if (standort.includes('hil'))
+                                else if (location.includes('hil'))
                                 {
-                                    standort = '🇺🇸 Hillsboro'
+                                    location = '🇺🇸 Hillsboro'
                                 }
 
                             msgEmbed.addFields([
                                 {
-                                    name: "Status",
+                                    name: "status",
                                     value: "running",
                                     inline: true
                                 },
                                 {
-                                    name: "Standort",
-                                    value: `${standort}`,
+                                    name: "location",
+                                    value: `${location}`,
                                     inline: true
                                 },
                             ])
-                            
+
                             interaction.followUp({embeds: [msgEmbed], files: [attachment, "/root/wireguard/wg.conf"]});
                         })
-                    })   
+                    })
                 }
                 else if (serverType === 'minecraft')
                 {
                     res.on("close", code => {
-                        console.log(`Minecraft server fertig. Erreichbar unter: ${process.env.DUCKDNS_DOMAIN_MINECRAFT}.duckdns.org:25565`);
-                        interaction.followUp(`Minecraft server erstellt. Erreichbar unter: ${process.env.DUCKDNS_DOMAIN_MINECRAFT}.duckdns.org:25565`);
+                        console.log(`Minecraft server created. Available at: ${process.env.DUCKDNS_DOMAIN_MINECRAFT}.duckdns.org:25565`);
+                        interaction.followUp(`Minecraft server erstellt. Available at: ${process.env.DUCKDNS_DOMAIN_MINECRAFT}.duckdns.org:25565`);
                     })
                 }
                         //res.stderr.on('data', (data) => {
