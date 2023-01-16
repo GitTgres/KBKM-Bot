@@ -108,7 +108,7 @@ export default new Command({
                 }
                 break;
             case "start":
-                const serverType = interaction.options.getString('typ');
+                const serverType = interaction.options.getString('type');
                 const serverLocation = interaction.options.getString('location');
 
                 //create new server
