@@ -26,3 +26,13 @@ Information for credentials:
 - DUCKDNS_TOKEN -> Go to [Duck DNS](https://www.duckdns.org/) and copy the 'token' from the dashboard
 - DUCKDNS_DOMAIN_VPN -> Create a subdomain for your vpn server and copy it (Only copy the subdomain!!!)
 - DUCKDNS_DOMAIN_MINECRAFT -> Create a subdomain for your minecraft server and copy it (Only copy the subdomain!!!)
+
+## Available Commands
+
+This bot provides the following commands:
+
+- '/w2g' generates a Watch2Gether link
+- '/server info' gives you the server address, server status and server location
+- '/server start type=<vpn, minecraft> location=<Ashburn 🇺🇸, Hillsboro 🇺🇸, Falkenstein 🇩🇪, Nürnberg 🇩🇪, Helsinki 🇫🇮>' creates a server in the respective location and configures the server according to the type
+
+Every command has the optional parameter 'hidden=true'. When you specify it, the result of the command is only shown to you.
