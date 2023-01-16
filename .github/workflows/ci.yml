@@ -34,7 +34,7 @@ jobs:
           ANSIBLE_FORCE_COLOR: '1'
 
   test_vpn_server:
-    name: Test VPN server
+    name: Test vpn server
     runs-on: ubuntu-latest
     needs: lint
     steps:
@@ -61,7 +61,7 @@ jobs:
           DUCKDNS_TOKEN: ${{ secrets.DUCKDNS_TOKEN }}
           DUCKDNS_DOMAIN_VPN: ${{ secrets.DUCKDNS_DOMAIN_VPN }}
           DUCKDNS_DOMAIN_MINECRAFT: ${{ secrets.DUCKDNS_DOMAIN_MINECRAFT }}
-          in_container: 'false'
+          IN_CONTAINER: 'false'
           PY_COLORS: '1'
           ANSIBLE_FORCE_COLOR: '1'
 
@@ -93,6 +93,6 @@ jobs:
           DUCKDNS_TOKEN: ${{ secrets.DUCKDNS_TOKEN }}
           DUCKDNS_DOMAIN_VPN: ${{ secrets.DUCKDNS_DOMAIN_VPN }}
           DUCKDNS_DOMAIN_MINECRAFT: ${{ secrets.DUCKDNS_DOMAIN_MINECRAFT }}
-          in_container: 'false'
+          IN_CONTAINER: 'false'
           PY_COLORS: '1'
           ANSIBLE_FORCE_COLOR: '1'
