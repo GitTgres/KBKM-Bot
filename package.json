@@ -1,5 +1,5 @@
 {
-  "name": "watch2getherbot",
+  "name": "kbkm-bot",
   "version": "1.0.0",
   "description": "Discord Bot, which creates a Watch2Gether link",
   "main": "index.js",

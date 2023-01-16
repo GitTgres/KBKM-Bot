@@ -8,7 +8,7 @@ import chalk from "chalk";
 
 export default new Command({
     name: "server",
-    description: "Ermöglicht die Kontrolle über einen Server",
+    description: "Makes it possible to control a server on hetzner.cloud",
     run: async ({ interaction }) => {
         switch (interaction.options.getSubcommand())
         {

@@ -4,7 +4,6 @@ import { Event } from "../structures/Event";
 import { ExtendedInteraction } from "../typings/Command";
 
 export default new Event("interactionCreate", async (interaction) => {
-    console.log(`Bot erreichbar: ${global.botAvailable}`);
     if (!global.botAvailable) return;
     global.botAvailable = false;
     if (interaction.isCommand()) {

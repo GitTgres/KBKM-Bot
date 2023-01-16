@@ -4,7 +4,7 @@ import puppeteer = require('puppeteer');
 
 export default new Command({
     name: "w2g",
-    description: "Antwortet mit einem Watch2Gether Link",
+    description: "Responds with a Watch2Gether link",
     run: async ({ interaction }) => {
 
         const start = Date.now();
@@ -17,8 +17,8 @@ export default new Command({
         
         const page = await browser.newPage();
 
-        page.goto("https://w2g.tv/?lang=de");
-        //await page.goto("https://google.de");
+        page.goto("https://w2g.tv/en/");
+
         await page.waitForSelector('#qc-cmp2-ui > div.qc-cmp2-footer.qc-cmp2-footer-overlay.qc-cmp2-footer-scrolled > div > button:nth-child(2)');
 
         await page.click('#qc-cmp2-ui > div.qc-cmp2-footer.qc-cmp2-footer-overlay.qc-cmp2-footer-scrolled > div > button:nth-child(2)');
