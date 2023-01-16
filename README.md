@@ -14,23 +14,15 @@ https://user-images.githubusercontent.com/39748835/211038844-be6491f8-4ea9-425c-
 
 ## Start bot
 
-🚧 Currently the bot is under construction. 🚧<br />
-When you commit your code to Github, a Github workflow gets activated. The workflow builds a docker image out of your code, scans this image with snyk and finally pushes the image to docker hub. After that, you can start your container with the following command: (Fill in your credential at the respective "<>" position) 
+You can start your container with the following command: (Fill in your credential at the respective "<>" position) 
 
 ```
 docker run --name kbkm-bot -e DISCORD_BOT_TOKEN=<> -e GUILD_ID=<> -e HCLOUD_TOKEN=<> -e DUCKDNS_TOKEN=<> -e DUCKDNS_DOMAIN_VPN=<> -e DUCKDNS_DOMAIN_MINECRAFT=<> -d ghcr.io/gittgres/kbkm-bot:latest
 ```
-
-### Useful links:
-
-- https://github.com/hetznercloud/hcloud-python/issues/139
-- https://pypi.org/project/hcloud/
-- https://www.redhat.com/sysadmin/python-venv-ansible
-- https://www.digitalocean.com/community/tutorials/how-to-install-go-on-ubuntu-20-04
-- https://github.com/ansible-collections/hetzner.hcloud
-- https://www.redhat.com/sysadmin/extra-variables-ansible-playbook
-- https://stackoverflow.com/questions/48514072/how-to-automatically-pass-vault-password-when-running-ansible-playbook
-- https://www.duckdns.org/install.jsp?tab=linux-cron
-- https://www.shellhacks.com/disable-ssh-host-key-checking/
-- https://github.com/githubixx/ansible-role-wireguard
-- https://github.com/ansible-collections/hetzner.hcloud/issues/94
+Information for credentials:
+- DISCORD_BOT_TOKEN -> Go to [Discord Developer Portal](https://discord.com/developers/applications) and create a new application. In the setting 'Bot' you can find your Bot token
+- GUILD_ID -> Right-click on the server, where the bot should run and than click on 'copy id'
+- HCLOUD_TOKEN -> Go to [Hetzner Cloud Console](https://console.hetzner.cloud/projects) and create a new project. In the setting 'security' create a new api-token
+- DUCKDNS_TOKEN -> Go to [Duck DNS](https://www.duckdns.org/) and copy the 'token' from the dashboard
+- DUCKDNS_DOMAIN_VPN -> Create a subdomain for your vpn server and copy it (Only copy the subdomain!!!)
+- DUCKDNS_DOMAIN_MINECRAFT -> Create a subdomain for your minecraft server and copy it (Only copy the subdomain!!!)
