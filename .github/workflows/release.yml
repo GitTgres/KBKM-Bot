@@ -50,5 +50,5 @@ jobs:
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
-          image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+          image: ghcr.io/gittgres/kbkm-bot:latest
           args: --file=Dockerfile
