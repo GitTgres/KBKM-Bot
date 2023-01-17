@@ -15,7 +15,6 @@ export default new Command({
             case "info":
                 try
                 {
-                    //const serverType = interaction.options.getString('typ');
                     const serverInfo = (await exec(`/root/go/bin/hcloud server list -o columns=name,status,location -o noheader`)).stdout.split("\n");
 
                     const msgEmbed = new MessageEmbed()
@@ -115,18 +114,7 @@ export default new Command({
                 const res = spawn('ansible-playbook', ['create_server.yml', '-e', `type=${serverType}`, '-e', `location=${serverLocation}`], {cwd: '/root/hetzner_server_management/create_server'})
 
                 res.stdout.pipe(process.stdout)
-                //logging in discord
-                /*
-                let log = "";
-                res.stdout.on('data', (data: string) => {
-                    if ((log + data).length > 1900) {
-                        log = "";
-                        log = log + data
-                    }else{
-                        log = log + data
-                    }
-                    interaction.editReply(`\`\`\`${log}\`\`\``);
-                });*/
+
                 if (serverType === 'vpn')
                 {
                     res.on("close", code => {
@@ -185,9 +173,6 @@ export default new Command({
                         interaction.followUp(`Minecraft server erstellt. Available at: ${process.env.DUCKDNS_DOMAIN_MINECRAFT}.duckdns.org:25565`);
                     })
                 }
-                        //res.stderr.on('data', (data) => {
-                        //    console.log(chalk.red(`child stderr:\n${data}`));
-                        //});
                 break;
             default:
                 break;
