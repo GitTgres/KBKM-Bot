@@ -50,5 +50,5 @@ jobs:
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
-          image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
           args: --file=Dockerfile
