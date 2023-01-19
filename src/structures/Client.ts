@@ -29,12 +29,12 @@ export class ExtendedClient extends Client {
     }
 
     async registerCommands({ commands, guildId }: RegisterCommandsOptions) {
-        
-        //if you want that your bot uses the slash commands in a global scope, you have to replace 
+
+        //if you want that your bot uses the slash commands in a global scope, you have to replace
         //this.guilds.cache.get(guildId)? with this.application?
 
         commands.forEach(async (command: CommandType) =>{
-            switch (command.name) 
+            switch (command.name)
             {
                 case "w2g":
                     this.guilds.cache.get(guildId)?.commands.create(
@@ -115,6 +115,41 @@ export class ExtendedClient extends Client {
                                             }
                                         ]
                                     },
+                                    {
+                                        name: "type",
+                                        description: "Type of the server",
+                                        required: true,
+                                        type: Constants.ApplicationCommandOptionTypes.STRING,
+                                        choices: [
+                                            {
+                                                name: `Minecraft Server`,
+                                                value: "minecraft"
+                                            },
+                                            {
+                                                name: "VPN",
+                                                value: "vpn"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        name: 'hidden',
+                                        description: 'Just you know that a server starts',
+                                        required: false,
+                                        type: Constants.ApplicationCommandOptionTypes.STRING,
+                                        choices: [
+                                            {
+                                                name: "true",
+                                                value: "true"
+                                            },
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                name: 'delete',
+                                description: 'Deletes a server',
+                                type: Constants.ApplicationCommandOptionTypes.SUB_COMMAND,
+                                options: [
                                     {
                                         name: "type",
                                         description: "Type of the server",
