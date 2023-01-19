@@ -19,7 +19,7 @@ https://user-images.githubusercontent.com/39748835/212809730-4fca4ae8-069f-400f-
 
 ## Start bot
 
-You can start your container with the following command: (Fill in your credential at the respective "<>" position) 
+You can start your container with the following command: (Fill in your credential at the respective "<>" position)
 
 ```
 docker run --name kbkm-bot -e DISCORD_BOT_TOKEN=<> -e GUILD_ID=<> -e HCLOUD_TOKEN=<> -e DUCKDNS_TOKEN=<> -e DUCKDNS_DOMAIN_VPN=<> -e DUCKDNS_DOMAIN_MINECRAFT=<> -d ghcr.io/gittgres/kbkm-bot:latest
@@ -38,6 +38,7 @@ This bot provides the following commands:
 
 - ``/w2g`` generates a Watch2Gether link
 - ``/server info`` gives you the server address, server status and server location
-- ``/server start type=<vpn, minecraft> location=<Ashburn 🇺🇸, Hillsboro 🇺🇸, Falkenstein 🇩🇪, Nürnberg 🇩🇪, Helsinki 🇫🇮>`` creates a server in the respective location and configures the server according to the type
+- ``/server start type=<vpn, minecraft> location=<🇺🇸 Ashburn,🇺🇸 Hillsboro,🇩🇪 Falkenstein,🇩🇪 Nürnberg, 🇫🇮 Helsinki>`` creates a server in the respective location and configures the server according to the type
+- ``/server delete type=<vpn, minecraft>`` deletes the desired server
 
 Every command has the optional parameter ``hidden=true``. When you specify it, the result of the command is only shown to you.
