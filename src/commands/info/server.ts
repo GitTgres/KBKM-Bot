@@ -174,6 +174,16 @@ export default new Command({
                     })
                 }
                 break;
+            case "delete":
+                const server_type = interaction.options.getString('type');
+
+                const result = spawn('ansible-playbook', ['delete_server.yml', '-e', `type=${server_type}`], {cwd: '/root/hetzner_server_management/delete_server'})
+
+                result.stdout.pipe(process.stdout)
+
+                result.on("close", data => {
+                    console.log(`The ${server_type} server is now absent`);
+                });
             default:
                 break;
         }
