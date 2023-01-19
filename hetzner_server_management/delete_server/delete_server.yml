@@ -1,0 +1,15 @@
+---
+- name: Delete server on https://www.hetzner.com/cloud
+  hosts: localhost
+  become: true
+  tasks:
+    - name: Delete ssh key if it exists
+      hetzner.hcloud.hcloud_ssh_key:
+        name: "{{ type }}_ssh_key"
+        api_token: "{{ lookup('ansible.builtin.env', 'HCLOUD_TOKEN') }}"
+        state: absent
+    - name: Delete server if it exists
+      hetzner.hcloud.hcloud_server:
+        name: "{{ type }}"  # vpn or minecraft
+        api_token: "{{ lookup('ansible.builtin.env', 'HCLOUD_TOKEN') }}"
+        state: absent

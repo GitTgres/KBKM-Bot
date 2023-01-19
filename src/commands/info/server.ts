@@ -183,6 +183,7 @@ export default new Command({
 
                 result.on("close", data => {
                     console.log(`The ${server_type} server is now absent`);
+                    interaction.followUp(`The ${server_type} server is now absent`);
                 });
             default:
                 break;
