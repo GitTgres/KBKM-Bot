@@ -9,12 +9,12 @@ export default new Command({
 
         const start = Date.now();
 
-        try 
+        try
         {
         //const browser = await puppeteer.launch({"headless": true, args: ['--disable-dev-shm-usage', '--no-sandbox', '--disable-gpu']});
         //const browser = await puppeteer.launch({"headless": false, executablePath: 'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe', args: ['--disable-dev-shm-usage', '--no-sandbox', '--disable-gpu']});
         const browser = await puppeteer.launch({"headless": true, executablePath: '/usr/bin/google-chrome', args: ['--disable-dev-shm-usage', '--no-sandbox', '--disable-gpu']});
-        
+
         const page = await browser.newPage();
 
         page.goto("https://w2g.tv/en/");
@@ -22,14 +22,14 @@ export default new Command({
         await page.waitForSelector('#qc-cmp2-ui > div.qc-cmp2-footer.qc-cmp2-footer-overlay.qc-cmp2-footer-scrolled > div > button:nth-child(2)');
 
         await page.click('#qc-cmp2-ui > div.qc-cmp2-footer.qc-cmp2-footer-overlay.qc-cmp2-footer-scrolled > div > button:nth-child(2)');
-        
+
         await page.waitForSelector('.bg-w2g-yellow');
 
         await page.click('.bg-w2g-yellow');
-    
+
         await page.waitForSelector('#intro-modal', {visible: true, hidden: false});
-        
-        await page.click('#intro-modal > div.actions > div');
+
+        await page.click('.positive');
 
         await page.waitForFunction("document.querySelector('#w2g-top-inviteurl > input[type=text]').value != ''");
 
@@ -54,10 +54,10 @@ export default new Command({
 
         interaction.followUp({embeds: [msgEmbed]});
 
-        await browser.close(); 
-        
-        } 
-        catch (error) 
+        await browser.close();
+
+        }
+        catch (error)
         {
             console.error(error);
 
