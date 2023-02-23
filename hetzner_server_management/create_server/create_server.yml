@@ -9,7 +9,7 @@
       ansible.builtin.import_tasks: tasks/hetzner_management.yml
 
 - name: Initial config
-  hosts: hetzner_{{ type }}
+  hosts: hetzner_{{ type|default('vpn') }}
   become: true
   vars_files:
     - vars/vars.yml
